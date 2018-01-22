@@ -1,0 +1,70 @@
+
+firstChoiceCommon
+
+This project is used by other First Choice projects as a .jar file called common.jar.
+
+Until now no tags or version numbers have been applied to the code base or distributables,
+this release seeks to remedy that situation, the following is an explanation of a developers
+responsibilities and processes that should be followed in order to achieve version control
+at a fundamental level.  These guidelines are in no way expected to be an exhaustive
+release control process but should serve as a good starting point, a foundation upon which
+more robust release procedures can be built.
+
+RELEASING CODE
+
+There are two ways in which to release code, one is to release code from a development
+machine, this is often discouraged due to the ability for a developers machine to contain
+invalid, incomplete or corrupt (or experimental) versions of libraries which can cause
+problems.  The other way to release code is to take a copy from the CruiseControl machine.
+
+METHOD1 - RELEASING FROM A DEVELOPERS MACHINE
+
+In order to build code from a developers machine it is a simple process but one that should
+be adhered to in order to ensure a valid distributable is produced.
+
+1. Once changes have been made and adequately tested these changes must be commited to cvs.
+2. Make sure that the version.properties file contains a valid version number, it is important
+to make sure this file is changed when performing a release.
+3. Synchronise the developers machine with the HEAD (or tip of branch) to ensure the latest
+code matches thet code on the developers machine.  Remember that there is no need to sync
+the "target" folder as this is created when code is built.
+4. tag the code within cvs using the following nomenclature.
+			release_<version.major>_<version.minor><version.patch>
+		so for example if the version.properties file contains
+			version.major=1
+			version.minor=0
+			version.patch=0
+		the tag would be
+			release_1_0_0
+5. run the "all" target of the build.xml using Ant.  This is the default target so simply
+running Ant against this build file should do the same thing.
+6. the distributable should have been produced and stored in the target/dist folder of the
+project.
+
+METHOD2 - RELEASING FROM CRUISECONTROL MACHINE
+
+CruiseControl should have automatically produced the distributable for the project as long
+as the code base has been tagged correctly.
+In order to retrieve the distributable go to the artifacts folder which is currently
+http://cra-2ka61:8080/artifacts/dependencies/firstchoicecommon/
+or simply go to the cruise control main page and follow the links to the distributable
+artifacts for the project in question.  The main page can be found here http://cra-2ka61:8080/
+
+BUILDING CODE
+
+In order to build code on a developers machine there are 3 targets of interst in the build.xml
+file.  They are;
+		clean 	- remove the target folder
+		compile - compile java files to class files which are stored in target/classes
+		package - package the code into a single jar file, stored in target/dist
+
+REQUESTING A BUILD ON CRUISECONTROL
+
+If automatic building has been stopped on CruiseControl, or you need a new release before
+the round robin of CruiseControl will reach your project you can request a build.
+To do this simply go to the CruiseControl main page http://cra-2ka61/ and press the
+build button next to the firstChoiceCommon project.  If the build is successful a new 
+distributable should be put into the distribs folder available at 
+http://cra-2ka61:8080/artifacts/dependencies/
+
+  		 			 

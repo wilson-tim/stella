@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="main/resources"/>
+	<classpathentry kind="src" path="test/resources"/>
+	<classpathentry kind="src" path="test/java"/>
+	<classpathentry kind="src" path="main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/antlr-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="lib" path="libs/commons-collections-3.2.jar"/>
+	<classpathentry kind="lib" path="libs/commons-digester-1.8.jar"/>
+	<classpathentry kind="lib" path="libs/commons-fileupload-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="libs/edtftpj-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/j2ee-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/jaxb-api-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/jaxb-impl-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/jaxb-libs-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/jax-qname-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/junit-3.8.2.jar"/>
+	<classpathentry kind="lib" path="libs/log4j-1.2.9.jar"/>
+	<classpathentry kind="lib" path="libs/namespace-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/ojdbc14-10.2.0.1.0.jar"/>
+	<classpathentry kind="lib" path="libs/oro-2.0.8.jar"/>
+	<classpathentry kind="lib" path="libs/relaxngDatatype-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/servlet-api-2.3.jar"/>
+	<classpathentry kind="lib" path="libs/standard-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/struts-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/xercesImpl-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/xml-apis-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/xsdlib-1.0.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

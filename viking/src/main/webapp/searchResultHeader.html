@@ -1,0 +1,32 @@
+<style>
+button { width: 1.5cm; padding: 0px; margin: 2px; }
+table {border: 1px solid darkblue; }
+td { text-align: center; vertical-align: top; }
+.datatable th { text-align: center; vertical-align: middle; color: darkBlue; padding: 1px;}
+.datatable td { text-align: center; }
+.nbl { border-left: 0px; }
+.nbr { border-right: 0px; }
+.nblr { border-left: 0px; border-right: 0px; }
+.dspAirport {background-color: transparent; border: 0px; margin: 0px; padding: 0px; color: white; text-align: center; font-size: smaller;}
+.sortHeader { cursor: pointer; }
+@media screen {
+  .noScreen { display: none; }
+  .A { background-color: lightgreen; color: black; }  <%-- Agreed --%>
+  .F { color: black; }                                <%-- Fixed --%>
+  .H { background-color: mistyrose; color: black; }   <%-- Historic --%>
+  .N { background-color: lightblue; color: black; }   <%-- New --%>
+  .M { color: black; }                                <%-- Mixed --%>
+  .Z { color: black; }                                <%-- null --%>
+}
+@media print {
+  .noPrint { display: none; }
+  .datatable th { font-size: 6pt; font-weight: bold; }
+  .datatable td { font-size: 6pt; border: 1px solid black; }
+  .N { background-color: white; font-weight: normal; color: black; }
+  .H { background-color: white; font-weight: normal; font-style: italic; color: black; }
+  .A { background-color: white; font-weight: bold; font-style: italic; color: black; }
+  .F { background-color: white; font-weight: bold; color: black; }
+  .M { background-color: white; font-weight: normal; color: black; }
+  .Z { background-color: white; font-weight: normal; color: black; }
+}
+</style>

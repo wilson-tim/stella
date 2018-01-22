@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Built-By: tim
+Created-By: Apache Maven
+Build-Jdk: 1.8.0_152
+Class-Path: servlet-api-2.3.jar firstChoiceCommon-1.0.jar struts-1.0.j
+ ar commons-beanutils-1.7.0.jar commons-logging-1.0.3.jar commons-dige
+ ster-1.8.jar ojdbc6-11.2.0.1.0.jar
+Extension-Name: Viking
+Implementation-Title: Viking
+Implementation-Version: 1.0
+

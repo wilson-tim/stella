@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Stella ::</title>
+<style>
+th {text-align: right;}
+body {text-align: center;}
+</style>
+<script>
+
+function doOnLoad() {
+	var frm=window.document.forms[0];
+	var result = location.search.match(/(\S+)user=([\w%]+)(&*\S*)/i);
+	if (result != null) {
+		frm.j_username.value = unescape(result[2]);
+		frm.j_password.focus();
+	} else
+		frm.j_username.focus();
+}
+</script>
+</head>
+<body onload="doOnLoad();">
+<form method="post" action="j_security_check">
+<center>
+<h1>Please login to access Stella</h1>
+<p>
+<table border="0" cellpadding="3" cellspacing="5">
+	<tr>
+		<th>User Name:</th>
+		<td><input type="text" name="j_username" value=""  onclick="this.value= ''"/></td>
+		<td></td>
+	</tr>
+	<tr>
+		<th>Password:</th>
+		<td><input type="password" name="j_password"  onclick="this.value= ''"/></td>
+		<td><input type="submit" name="action" value="Login"/></td>
+	</tr>
+</table>
+</center>
+</form>
+</body>
+</html>

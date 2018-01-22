@@ -1,0 +1,24 @@
+
+use this parms to kick off the stellamirload main class from command line or from netbeans
+Leigh Oct 2003
+
+
+Parms for dwdev
+
+
+-ugums -pgstkd -doracle.jdbc.driver.OracleDriver -cjdbc:oracle:thin:@dwdev:1521:dwd -mTEST
+
+
+Parms for personal db:
+
+
+
+
+-ustella -pbelgium -doracle.jdbc.driver.OracleDriver -cjdbc:oracle:thin:@localhost:1521:person3 -mLIVE
+
+
+
+For dwtest
+
+
+-ustella -pbelgium -doracle.jdbc.driver.OracleDriver -cjdbc:oracle:thin:@dwtest:1521:dwt -mLIVE

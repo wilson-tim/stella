@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="genericmaint" default="help" basedir=".">
+
+	<!--  ================ properties ================ -->
+	<property environment="env" />
+	<property name="was.home" value="${env.WAS_HOME}" />
+	<property name="http.root" value="${env.DOCUMENT_ROOT}" />
+	<property name="build.script.version" value="$Revision 1.0 $" />
+
+	<!-- ================ project directories ================ -->
+	<property name="project.root" value="${basedir}" />
+	<property name="source.dir" value="src/main" />
+	<property name="etc.dir" value="config" />
+	<property name="web.dir" value="src/main/webapp" />
+	<property name="source.web-inf.dir" value="${web.dir}/WEB-INF" />
+	<property name="source.jsp.dir" value="${source.web-inf.dir}/jsp" />
+	<property name="build.dir" value="build" />
+	<property name="test.dir" value="test" />
+	<property name="test.etc.dir" value="${test.dir}/config" />
+	<property name="test.properties.dir" value="${test.dir}/properties" />
+	<property name="test.src.dir" value="${test.dir}/src" />
+	<property name="test.libs.dir" value="${test.dir}/libs" />
+	<property name="build.classes" value="${build.dir}/classes" />
+	<property name="build.test.dir" value="${build.dir}/test" />
+	<property name="build.test.classes" value="${build.test.dir}/classes" />
+	<property name="lib.dir" value="${source.web-inf.dir}/lib" />
+	<property name="lib.contrib.dir" value="contrib" />
+	<property name="doc.dir" value="javadoc" />
+
+	<property name="test.dir" value="${build.dir}/tests" />
+	<property name="test.data.dir" value="${test.dir}/data" />
+	<property name="test.reports" value="${build.dir}/reports" />
+
+	<!-- ================ local build properties ============ -->
+	<property name="ant-files" value="ant-files" />
+	<property file="${project.root}/${ant-files}/build.properties" />
+	<property file="${test.dir}/properties/database.properties" /><!--database properties for test, this can be switched for prod testing if required-->
+	<property name="deploy.properties" value="${ant-files}/deploy.properties" />
+	<property name="debug" value="on" />
+
+	<!-- =============== build classpath ================ -->
+	<path id="build.classpath">
+		<pathelement location="etc" />
+		<fileset dir="${lib.dir}">
+			<patternset refid="libs" />
+		</fileset>
+			<fileset dir="${lib.contrib.dir}">
+				<patternset refid="libs" />
+			</fileset>
+	</path>
+
+	<path id="test.classpath">
+		<pathelement location="etc" />
+		<pathelement location="${web.dir}" />
+		<pathelement location="${test.dir}/hsqldb" />
+		<pathelement location="${build.classes}" />
+		<pathelement location="${build.test.classes}" />
+		<fileset dir="${test.libs.dir}">
+			<patternset refid="libs" />
+		</fileset>
+	</path>
+
+	<!-- ================ task definitions ================ -->
+	<!--<taskdef name="wsStartApplication" 	classname="com.ibm.websphere.ant.tasks.StartApplication" />-->
+	<!--<taskdef name="wsStopApplication" 	classname="com.ibm.websphere.ant.tasks.StopApplication" />-->
+	<!--taskdef name="vizant" 				classname="net.sourceforge.vizant.Vizant"/-->
+
+	<!-- Module filesets -->
+
+	<!-- ================ pattern sets ================ -->
+	<patternset id="libs">
+		<include name="**/*.jar" />
+		<include name="**/*.zip" />
+	</patternset>
+
+	<patternset id="testcases">
+		<include name="**/*Test.class" />
+	</patternset>
+
+	<patternset id="dist.classes">
+		<include name="**/*.class" />
+		<exclude name="**/*Test*.class" />
+	</patternset>
+
+	<patternset id="javadoc.source">
+		<include name="**/*.java" />
+		<exclude name="**/test/*.java" />
+	</patternset>
+
+	<patternset id="unit.tests">
+		<include name="**/*Test*.class" />
+	</patternset>
+
+	<patternset id="jsps">
+		<include name="**/*.jsp" />
+		<include name="**/*.html" />
+		<include name="error/*.jsp" />
+	</patternset>
+
+	<patternset id="images">
+		<include name="**/*.gif" />
+		<include name="**/*.jpg" />
+	</patternset>
+
+	<patternset id="css">
+		<include name="**/*.css" />
+	</patternset>
+
+	<patternset id="javascript">
+		<include name="**/*.js" />
+	</patternset>
+	<patternset id="webinf">
+		<include name="**/**/*.xml" />
+		<include name="**/**/*.tld" />
+		<!--
+			.xmi: file extention for websphere config extention
+			files that need to be included in build
+		-->
+		<include name="**/**/*.xmi" />
+	</patternset>
+
+	<patternset id="etc">
+		<include name="**/*.xml" />
+		<include name="**/*.properties" />
+	</patternset>
+
+
+	<patternset id="classpath-properties">
+		<include name="**/system.properties" />
+	</patternset>
+
+
+	<patternset id="config">
+		<include name="**/*.xml" />
+		<include name="**/*.properties" />
+	</patternset>
+
+	<patternset id="properties">
+		<!--include name="**/*.properties" /-->
+		<include name="*.properties" />
+	</patternset>
+
+	<patternset id="web.xml">
+		<include name="**/*.xml" />
+	</patternset>
+
+	<patternset id="xml">
+		<include name="**/*.xml" />
+	</patternset>
+
+	<patternset id="xsl">
+		<include name="**/*.xsl" />
+	</patternset>
+
+	<!-- ================ targets ================ -->
+
+	<!-- Default target -->
+	<target name="help" depends="init">
+		<!-- Use spaces to maintain format -->
+		<echo>
+			<![CDATA[
+  *******************************************************************
+  Build script for ${module.name} ${module.version} - ${build.script.version} Using ${ant.version}
+
+  Project root: ${project.root}
+  Module root: ${module.root}
+  Java home: ${java.home}
+
+  Available targets:
+
+  help             - display all available targets
+
+  build            - build the module; compiles source and creates jar
+
+  compile          - compile Java source
+
+  javadoc          - generate API documentation
+
+  runtest          - run specified unit test class using -Dtestclass=XXXX
+
+   alltests         - run all unit tests
+
+  clean            - deletes all compiled class files
+
+  clean-javadoc    - deletes all genereated API documentation
+
+  clean-tests      - deletes testsuite reports
+
+  clean-all        - deletes all generated project files
+
+  jar              - generates module jar
+
+  clean-jar        - deletes module jar
+
+  validate-xml     - validate XML configuration files used for testcases
+
+  Notes:
+      use -logfile <filename> to have build process logged
+
+  *******************************************************************
+  ]]>
+  </echo>
+	</target>
+
+
+	<target name="javadoc" description="make the javadocs for ${app.name}">
+		<javadoc
+			use              = "yes"
+			version			 = "true"
+			author			 = "true"
+			header           = "${app.name} documentation"
+			windowtitle		 = "${app.name} documentation"
+			sourcepath       = "${src.dir}"
+			destdir          = "${doc.dir}"
+			packagenames     = "uk.co.firstchoice.osprey.*"
+			>
+			<classpath>
+				<path refid="build.classpath" />
+			</classpath>
+		</javadoc>
+	</target>
+
+	<target name="generate-vizant" depends="init">
+		<vizant antfile="build.xml" outfile="${build.dir}/build.dot"/>
+		<exec executable="dot" ><arg line="-Tpng ${build.dir}/build.dot -o ${build.dir}/build.png"/></exec>
+	</target>
+
+	<target name="init">
+		<tstamp>
+			<format property="build.timestamp" pattern="EEE MMM dd HH:mm:ss zzz yyyy" locale="en" />
+		</tstamp>
+
+		<condition property="env" value="dev">
+			<not>
+				<isset property="env" />
+			</not>
+		</condition>
+
+	</target>
+
+
+	<target name="manifest">
+		<manifest file="${build.dir}/MANIFEST.MF" mode="replace">
+			<attribute name="Built-By" value="${user.name}" />
+			<section name="common">
+				<attribute name="Specification-Version" value="${version}" />
+				<attribute name="Application-Title" value="${web.app}" />
+				<attribute name="Implementation-Version" value="${version} ${TODAY}" />
+				<attribute name="Implementation-Vendor" value="First Choice Holidays." />
+			</section>
+		</manifest>
+	</target>
+
+	<target name="compile">
+		<mkdir dir="${build.classes}" />
+		<javac srcdir="${source.dir}" debug="${debug}" destdir="${build.classes}">
+			<classpath refid="build.classpath" />
+		</javac>
+	</target>
+
+	<target name="configure-for-deploy">
+		<copy todir="${build.classes}">
+			<fileset dir="${etc.dir}">
+				<patternset refid="classpath-properties" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile-tests" depends="prepare-tests">
+		<javac srcdir="${source.dir}" debug="${debug}" destdir="${build.test.classes}">
+			<classpath refid="build.classpath" />
+		</javac>
+		<javac srcdir="${test.src.dir}" debug="${debug}" destdir="${build.test.classes}" deprecation="true">
+			<classpath refid="build.classpath" />
+			<classpath refid="test.classpath" />
+		</javac>
+	</target>
+
+	<target name="clean-all">
+		<delete dir="${build.dir}/" />
+		<delete dir="${doc.dir}/" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.classes}/" />
+	</target>
+
+	<!-- ============== tests ============ -->
+	<!-- remove test reports -->
+	<target name="clean-tests" depends="init">
+		<delete dir="${build.test.dir}" />
+	</target>
+
+	<!-- create test report directories -->
+	<target name="prepare-tests">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.test.classes}" />
+		<mkdir dir="${test.reports}/html" />
+		<copy todir="${build.test.dir}/WEB-INF">
+			<fileset dir="${source.web-inf.dir}" includes="*.xml" />
+		</copy>
+		<copy todir="${build.test.classes}">
+			<fileset dir="${etc.dir}">
+				<patternset refid="properties" />
+				<exclude name="**/system.properties" />
+			</fileset>
+			<fileset dir="${test.etc.dir}">
+				<patternset refid="xml" />
+			</fileset>
+			<fileset dir="${test.properties.dir}">
+				<patternset refid="properties" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Run a single unit test -->
+	<!-- To run a individual test, type: ant runtest -Dtestclass="uk.co.firstchoice.*" -->
+	<target name="runtest" depends="compile">
+		<java classname="${testclass}" fork="true" dir="${test.source.dir}">
+			<classpath refid="build.classpath" />
+		</java>
+	</target>
+
+	<!-- Run unit testing -->
+	<target name="run-alltests" depends="init, compile-tests">
+
+		<!-- run tests -->
+		<junit printsummary="yes" haltonfailure="no" fork="yes" dir="${project.root}">
+			<classpath>
+				<path refid="build.classpath" />
+				<path refid="test.classpath" />
+			</classpath>
+
+			<formatter type="xml" />
+			<batchtest todir="${test.reports}">
+				<fileset dir="${build.test.classes}">
+					<patternset refid="testcases" />
+					<exclude name="**/Accrual*.class" />
+					<exclude name="**/Invoice*.class" />
+				</fileset>
+			</batchtest>
+			<!--requires WebSphere naming.jar to be in the ANT classpath-->
+			<sysproperty key="java.naming.factory.initial" value="com.ibm.websphere.naming.WsnInitialCongtextFactory"/>
+			<sysproperty key="systemConfigFile" value="system.properties"/>
+		</junit>
+
+		<!-- format reports -->
+		<junitreport todir="${test.reports}/html">
+			<fileset dir="${test.reports}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${test.reports}/html" />
+		</junitreport>
+
+	</target>
+
+	<!-- ============ create war file ============ -->
+	<target name="create-war" depends="init, compile, configure-for-deploy, manifest">
+		<war destfile="${build.dir}/${web.app}.war" webxml="${source.web-inf.dir}/web.xml" manifest="${build.dir}/MANIFEST.MF">
+			<lib dir="${lib.dir}" />
+			<classes dir="${build.classes}" />
+			<zipfileset dir="${source.web-inf.dir}" prefix="WEB-INF">
+		       <include name="**/*.tld"/>
+		       <include name="**/*.xmi"/>
+    		</zipfileset>
+			<zipfileset dir="${web.dir}" >
+				<patternset refid="jsps" />
+				<patternset refid="images" />
+				<patternset refid="javascript" />
+				<patternset refid="css" />
+    		</zipfileset>
+			<zipfileset dir="${source.web-inf.dir}" prefix="WEB-INF">
+		        <include name="struts-config.xml"/>
+    		</zipfileset>
+		</war>
+	</target>
+
+	<target name="c
+		lean-war" depends="init">
+		<delete file="${build.dir}/${web.app}.war" />
+	</target>
+
+	<!-- ============= create ear file ============== -->
+	<target name="create-ear" depends="create-war">
+		<ear destfile="${build.dir}/${ent.app}.ear" appxml="${etc.dir}/metadata/application.xml" manifest="${build.dir}/MANIFEST.MF">
+			<fileset dir="${build.dir}" includes="${web.app}.war" />
+			<fileset dir="${project.root}">
+				<include name="${etc.dir}/*.xml" />
+				<include name="${etc.dir}/*.properties" />
+			</fileset>
+		</ear>
+	</target>
+
+	<target name="create-app">
+		<antcall target="create-war" />
+		<antcall target="create-ear" />
+	</target>
+	<target name="clean-ear" depends="init">
+		<delete file="${build.dir}/${ent.app}.ear" />
+	</target>
+
+	<target name="clean-app" depends="init">
+		<antcall target="clean-war" />
+		<antcall target="clean-ear" />
+	</target>
+
+
+	<!-- ======== Module specific targets ======== -->
+	<target name="validate-xml" depends="init">
+		<xmlvalidate failonerror="yes" lenient="no" warn="yes">
+			<fileset dir="${source.web-inf.dir}" includes="*.xml" />
+		</xmlvalidate>
+	</target>
+
+
+	<!-- ======== WebSphere Deployment Incremental - Targets =========== -->
+	<target name="deploy-classes" depends="compile">
+		<copy todir="${was.home}/installedApps/${was.node}/${ent.app}.ear/${web.app}.war/WEB-INF">
+			<fileset dir="${build.dir}">
+				<patternset refid="dist.classes" />
+			    <patternset refid="properties"/>
+			</fileset>
+		</copy>
+	</target>
+	<target name="deploy-jsps" depends="init">
+		<copy todir="${was.home}/installedApps/${was.node}/${ent.app}.ear/${web.app}.war">
+			<fileset dir="${web.dir}" >
+				<patternset refid="jsps" />
+				<patternset refid="images" />
+				<patternset refid="javascript" />
+				<patternset refid="css" />
+			</fileset>
+		</copy>
+		<copy todir="${was.home}/installedApps/${was.node}/${ent.app}.ear/${web.app}.war">
+			<fileset dir="${source.dir}">
+				<patternset refid="xsl" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="deploy-lib" depends="init">
+		<copy todir="${was.home}/installedApps/${was.node}/${ent.app}.ear/${web.app}.war/WEB-INF/lib">
+			<fileset dir="${lib.dir}">
+				<patternset refid="libs" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="deploy-webinf" depends="init">
+		<copy todir="${was.home}/installedApps/${was.node}/${ent.app}.ear/${web.app}.war/WEB-INF">
+			<fileset dir="${source.web-inf.dir}">
+				<patternset refid="webinf" />
+			</fileset>
+			<fileset dir="${source.dir}">
+				<patternset refid="properties" />
+			</fileset>
+		</copy>
+	</target>
+	<!--target name="deploy-etc" depends="init,cfg-env">
+		<copy todir="${was.home}/installedApps/${was.node}/${ent.app}.ear/etc">
+			<fileset dir="${etc.dir}">
+				<patternset refid="etc" />
+			</fileset>
+		</copy>
+	 </target-->
+	<target name="deploy-etc" depends="init">
+		<copy todir="${was.home}/installedApps/${was.node}/${ent.app}.ear/etc">
+			<fileset dir="${etc.dir}">
+				<patternset refid="etc" />
+			</fileset>
+		</copy>
+		<copy todir="${was.home}/installedApps/${was.node}/${ent.app}.ear/${web.app}.war/WEB-INF/properties">
+			<fileset dir="${etc.dir}">
+				<patternset refid="etc" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="deploy" depends="init">
+		<antcall target="deploy-classes" />
+		<antcall target="deploy-jsps" />
+		<antcall target="deploy-lib" />
+		<antcall target="deploy-webinf" />
+		<antcall target="deploy-etc" />
+	</target>
+	<target name="redeploy">
+		<antcall target="stop-app" />
+		<antcall target="deploy" />
+		<antcall target="start-app" />
+	</target>
+
+	<!-- **************** WebSphere Tasks **************** -->
+
+	<!-- ******** stop application ******** -->
+	<target name="stop-app">
+		<wsStopApplication wasHome="${was.home}" server="${was.server}" node="${was.node}" host="${was.host}" port="${was.port}"  user="${was.username}" password="${was.password}" conntype="${was.conntype}" application="${ent.app}" />
+	</target>
+
+	<!-- ******** start application ******** -->
+	<target name="start-app">
+		<wsStartApplication wasHome="${was.home}" server="${was.server}" node="${was.node}" host="${was.host}" port="${was.port}"  user="${was.username}" password="${was.password}" conntype="${was.conntype}" application="${ent.app}" />
+	</target>
+
+
+	<target name="restart-app">
+		<antcall target="stop-app" />
+		<antcall target="start-app" />
+	</target>
+
+	<!-- ****** WebSphere Incremental Promote to production  ********* -->
+	<!-- HANDLE WITH CARE IF YOU WANT TO LIVE -->
+	<!--target name="promote">
+		<echo>
+			<![CDATA[
+  Usage: ant promote -Dpassword=******
+
+  Promoting to production: scp ${prod.user}:${password}@${prod.host}
+  ]]>
+		</echo>
+		<antcall target="promote.classes" />
+		<antcall target="promote.jsps" />
+		<antcall target="promote.statics" />
+	</target>
+
+	<target name="promote.jsps">
+		<echo> Copying jsps to ${prod.install.dir}/${web.app}.war</echo>
+		<scp todir="${prod.user}:${password}@${prod.host}:${prod.install.dir}/${web.app}.war}">
+			<fileset dir="web">
+				<exclude name="${basedir}/web/css" />
+				<exclude name="${basedir}/web/images" />
+				<exclude name="${basedir}/web/javascript" />
+			</fileset>
+		</scp>
+		<echo> Finished copying jsps to ${prod.install.dir}/${web.app}.war</echo>
+	</target>
+
+	<target name="promote.classes" depends="compile">
+		<echo> Copying classes to ${prod.install.dir}/${web.app}.war/WEB-INF/classes</echo>
+		<scp todir="${prod.user}:${password}@${prod.host}:${prod.install.dir}/${web.app}.war/WEB-INF/classes">
+			<fileset dir="${build.classes}" />
+		</scp>
+		<echo> Finished copying classes to ${prod.install.dir}/${web.app}.war/WEB-INF/classes</echo>
+	</target>
+
+	<target name="promote.statics">
+		<echo> Copying css, images, errors and javascript to ${prod.httpd.root}</echo>
+		<scp todir="${prod.user}:${password}@${prod.host}:${prod.httpd.root}/css">
+			<fileset dir="web/css" />
+		</scp>
+		<scp todir="${prod.user}:${password}@${prod.host}:${prod.httpd.root}/images">
+			<fileset dir="web/images" />
+		</scp>
+		<scp todir="${prod.user}:${password}@${prod.host}:${prod.httpd.root}/errors">
+			<fileset dir="web/errors" />
+		</scp>
+		<scp todir="${prod.user}:${password}@${prod.host}:${prod.httpd.root}/javascript">
+			<fileset dir="web/javascript" />
+		</scp>
+		<echo> Finished copying css, images, errors and javascript to ${prod.httpd.root}</echo>
+	</target-->
+
+	<!-- generate configuration for deployment environment : default environment: dev -->
+	<!--target name="cfg-env">
+		<antcall target="properties-cfg"/>
+		<antcall target="container-cfg"/>
+	</target>
+
+	  <target name="properties-cfg" depends="init">
+	    <echo>${build.timestamp}</echo>
+	    <echo>environment: ${env}</echo>
+	    <delete file="${etc.dir}/properties.xml"/>
+	    <xslt basedir="${build.dir}"
+	      destdir="${build.dir}"
+	      style="${build.dir}/xsl/properties.xsl"
+	      processor="trax"
+	      in="${etc.dir}/properties.env"
+	      out="${etc.dir}/properties.xml">
+
+	      <param name="cfgenv" expression="${env}"/>
+	      <param name="timestamp" expression="${build.timestamp}"/>
+	    </xslt>
+	  </target>
+
+	  <target name="container-cfg" depends="init">
+	    <echo>${build.timestamp}</echo>
+	    <echo>environment: ${env}</echo>
+	    <delete file="${etc.dir}/container.xml"/>
+	    <xslt basedir="${build.dir}"
+	      destdir="${build.dir}"
+	      style="${build.dir}/xsl/container.xsl"
+	      processor="trax"
+	      in="${etc.dir}/container.env"
+	      out="${etc.dir}/container.xml">
+
+	      <param name="cfgenv" expression="${env}"/>
+	      <param name="timestamp" expression="${build.timestamp}"/>
+	    </xslt>
+	  </target-->
+</project>

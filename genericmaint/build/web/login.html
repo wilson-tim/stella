@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>Maintenance Login</title>
+<style>
+th {text-align: right;}
+body {text-align: center;}
+</style>
+<script>
+var frm;
+
+function getCookie() {
+	var theCookie = document.cookie;
+	var firstChar = theCookie.indexOf("username=");
+	if (firstChar != -1) {
+		var lastChar=theCookie.indexOf(";", firstChar);
+		if (lastChar == -1) lastChar = theCookie.length;
+		var username = theCookie.substring(firstChar+9, lastChar);
+		frm.j_username.value = unescape(username);
+		if (username != "") {
+			frm.j_password.focus();
+		} else {
+			frm.j_username.focus();
+		}
+	} else {
+		frm.j_username.focus();
+	}
+}
+
+function doOnLoad() {
+	frm=window.document.forms[0];
+	getCookie();
+}
+</script>
+</head>
+<body onLoad="doOnLoad();">
+<form method="post" action="j_security_check">
+<h1>Please login to access the Maintenance Screens</h1>
+<p>
+<table border="0" cellpadding="3" cellspacing="0">
+	<tr>
+		<th>User Name:</th>
+		<td><input type="text" name="j_username" value=""></td>
+		<td></td>
+	</tr>
+	<tr>
+		<th>Password:</th>
+		<td><input type="password" name="j_password" value=""></td>
+		<td><input type="submit"  value="Log-in"></td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

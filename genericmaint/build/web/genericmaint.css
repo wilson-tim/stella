@@ -1,0 +1,119 @@
+body {
+				background: #c8c8df;
+				font-size: 8pt;
+				margin: 3px;
+				font-family: Verdana, Arial, Sans-serif;
+				text-align: center;
+}
+input, select {
+				font-size: 7pt;
+}
+button {
+				font-size: 7pt;
+				margin: 2px 7px;
+}
+h3 {
+				font-size: 16pt;
+				text-align: center;
+
+}
+h5 {
+				margin-top: 0px;
+				margin-bottom: 0px;
+				font-size: 12pt;
+				text-align: center;
+
+}
+h6 {
+				text-align: center;
+				color: red;
+				font-size: 20px;
+}
+th			{
+				font-size: 8pt;
+				text-align: right;
+				font-weight: normal;
+				color: #146cba;
+}
+td			{
+				font-size: 8pt;
+}
+tr.linkline0	{
+				background-color: #ffffff;
+				cursor: hand;
+}
+tr.linkline1	{
+				background-color: #ffffd0;
+				cursor: hand;
+}
+tr.line0	{
+				background-color: #ffffff;
+}
+tr.line1	{
+				background-color: #ffffd0;
+}
+.amount {
+				text-align: right;
+}
+.readOnlyAmount {
+				text-align: right;
+				border: 2px solid #c8c8df;
+				background: #c8c8df;
+				color: #000000;
+}
+.dataTable {
+				font-size: 8pt;
+				width: 100%;
+				border: 1px solid black;
+}
+.dataTable th {
+				background-color: #f0f0f0;
+				border-right: 1px solid black;
+				border-bottom: 1px solid black;
+				margin: 5px;
+				vertical-align: bottom;
+				text-align: center;
+}
+.dataTable td {
+				border: 1px solid #eeeeee;
+				padding: 0px 2px;
+				text-align: right;
+}
+.displaydetails th {
+				text-align: right;
+				vertical-align: top;
+				padding-left: 5px;
+}
+.displaydetails td {
+				background-color: #f0f0f0;
+				border: 1px solid black;
+				padding: 1px 2px 1px 3px;
+}
+.versioninfo th {
+				vertical-align: middle;
+				text-align: left;
+				font-size: 7pt;
+				color: blue;
+				font-weight: bold;
+}
+.versioninfo td {
+				vertical-align: middle;
+				text-align: left;
+				font-size: 7pt;
+				color: black;
+}
+.rowradio {
+				margin: -3px 0px;
+}
+A {
+				color: #0000ff;
+}
+A:hover {
+				color: #ff0000;
+}
+A:active {
+}
+A:visited {
+}
+A:link {
+}

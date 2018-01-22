@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Built-By: Jrenganathan
+Created-By: Apache Maven
+Build-Jdk: 1.4.1_01
+Class-Path: jaxb-api-1.0.jar xsdlib-1.0.jar edtftpj-1.0.jar namespace-
+ 1.0.jar logkit-1.0.1.jar firstChoiceCommon-1.0.jar commons-beanutils-
+ 1.7.0.jar jaxb-libs-1.0.jar avalon-framework-4.1.3.jar xml-apis-1.0.j
+ ar j2ee-1.0.jar oro-2.0.8.jar commons-fileupload-1.0.jar struts-1.0.j
+ ar standard-1.0.jar ojdbc14-10.2.0.1.0.jar commons-logging-1.1.jar se
+ rvlet-api-2.3.jar commons-digester-1.8.jar log4j-1.2.9.jar relaxngDat
+ atype-1.0.jar antlr-1.0.jar commons-collections-3.2.jar jax-qname-1.0
+ .jar jaxb-impl-1.0.jar xercesImpl-1.0.jar
+Extension-Name: genericmaint
+Implementation-Title: genericmaint
+Implementation-Version: 1.0
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" ?>
+<project name="stella-java tasks" basedir="." default="archive">
+<!--//INIT/CLEAN //-->
+<target name="init">
+	<echo message="init"/>
+	<mkdir dir="${build.dir}" />
+	<mkdir dir="${build.classes.dir}" />
+	<mkdir dir="${build.dir}/WEB-INF" />
+	<mkdir dir="${testcases.dir}" />
+	<mkdir dir="${dist.dir}" />
+	<mkdir dir="${test.dir}/${test.reports.dir}"/>
+	<mkdir dir="${doc.dir}"/>
+	<mkdir dir="${generated.dir}"/>
+</target>
+<target name="clean">
+	<echo message="Cleaning"/>
+	<delete dir="${build.dir}"/>
+	<delete dir="${test}"/>
+	<delete dir="${dist.dir}"/>
+	<delete dir="${doc.dir}"/>
+	<delete dir="${generated.dir}"/>
+</target>
+<!--//INIT/CLEAN END //-->
+
+
+<!--//BUILD TARGETS //-->
+
+<target name="compile" depends="init">
+  	<javac
+	 	srcdir="${src.dir}"
+		destdir="${build.classes.dir}"
+		verbose="${verbose.value}"
+		>
+		<classpath>
+			<path refid="application.classpath"/>
+		</classpath>
+	</javac>
+</target>
+<target name="archive" depends="compile">
+	<echo message="archive"/>
+	<jar
+         destfile="${dist.dir}/${app.name}.jar"
+         basedir="${build.dir}/classes">
+	</jar>
+</target>
+<!--//BUILD TARGETS END//-->
+
+<!--//JUNIT TESTS //-->
+<target name="compiletests" depends="init, archive">
+  	<javac
+	 	srcdir="${test.src.dir}"
+	 	destdir="${testcases.dir}"
+		verbose="${verbose.value}"
+		>
+		<classpath>
+            <pathelement location="${dist.dir}/${app.name}.jar" />
+			<path refid="application.classpath"/>
+			<path refid="test.classpath"/>
+		</classpath>
+	</javac>
+</target>
+
+<target name="runtests" depends="compiletests" if="junit.present">
+    <java
+		fork="yes" classname="junit.textui.TestRunner"
+        taskname="junit" failonerror="true"
+		>
+        <arg value="test.com.company.AllJUnitTests"/>
+        <classpath>
+			<path refid="application.classpath"/>
+            <pathelement location="${dist.dir}/${app.name}.jar" />
+            <pathelement location="${testcases.dir}" />
+        </classpath>
+    </java>
+</target>
+<!--//JUNIT TESTS END//-->
+
+<!--// JAVADOC //-->
+<target name="javadoc" description="make the javadocs for ${app.name}">
+	<javadoc
+		use              = "yes"
+		version			 = "true"
+		author			 = "true"
+		header           = "${app.name} documentation"
+		windowtitle		 = "${app.name} documentation"
+		sourcepath       = "${src.dir}"
+		destdir          = "${doc.dir}"
+		packagenames     = "uk.co.firstchoice.stella.*"
+		>
+		<classpath>
+			<path refid="application.classpath" />
+		</classpath>
+	</javadoc>
+</target>
+
+</project>

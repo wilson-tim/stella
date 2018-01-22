@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<project name="stella properties" basedir="." default="">
+<!--//properties start//-->
+<property name="libs.dir" value="libs"/>
+<property name="dist.dir" value="dist"/>
+<property name="src.dir" value="src"/>
+	<property name="metadata.dir" value="${src.dir}/metadata"/>
+<property name="doc.dir" value="javadoc"/>
+<property name="build.dir" value="build"/>
+	<property name="build.classes.dir" value="${build.dir}/classes"/>
+<property name="verbose.value" value="false"/>
+<property name="test.dir" value="test"/>
+	<property name="test.src.dir" value="${test.dir}/${src.dir}"/>
+	<property name="test.libs.dir" value="${test.dir}/${libs.dir}"/>
+	<property name="testcases.dir" value="${build.dir}/testcases"/>
+	<property name="test.reports.dir" value="${test.dir}/reports"/>
+<property name="sql.dir" value="sql"/>
+<property name="generated.dir" value="generated"/>
+
+
+<property name="verbose.mode" value="true"/>
+<property name="app.name" value="stella-java"/>
+
+
+<property environment="env"/>
+<property name="xdoclet.lib" value="${env.XDOCLET_HOME}/lib" />
+<property name="junit.lib" value="${env.JUNIT_HOME}/libs" />
+
+<property name="junit.fork" value="true"/>
+<available property="junit.present" classname="junit.framework.TestCase" />
+
+<!--//properties end//-->
+
+<extensionSet id="manifest">
+    <libfileset dir="${libs.dir}">
+        <include name="**/*.jar"/>
+    </libfileset>
+</extensionSet>
+
+</project>

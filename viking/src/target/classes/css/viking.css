@@ -1,0 +1,196 @@
+body {
+				background: #c8c8df;
+				font-size: 8pt;
+				margin: 3px;
+				font-family: Verdana, Arial, Sans-serif;
+}
+input, select {
+				font-size: 7pt;
+}
+button {
+				border: 2px solid #9898af;
+				background-color: white;
+				font-weight: bold;
+				padding: 2px;
+				color: blue;
+				font-size: 7pt;
+				margin: 2px 7px;
+}
+h3 {
+				font-size: 16pt;
+				text-align: center;
+}
+h5 {
+				margin-top: 0px;
+				margin-bottom: 0px;
+				font-size: 12pt;
+				text-align: center;
+}
+h6 {
+				text-align: center;
+				color: red;
+				font-size: 20px;
+}
+table {
+				border-collapse: collapse;
+}
+th			{
+				font-size: 8pt;
+				vertical-align: bottom;
+				font-weight: normal;
+				background-color: #a8a8bf;
+				color: #ffffff;
+}
+.activeTab { 
+				font-weight: bold;
+				border-left: 1px solid black;
+				border-top: 1px solid black;
+				border-right: 1px solid black;
+}
+.inactiveTab {
+				font-weight: normal;
+				cursor: hand;
+				border: 0px;
+				border-bottom: 1px solid black;
+				text-decoration: underline;
+}
+.outerTabTable {
+				background-color: gray; /*#a06060;*/
+}
+.outerTabTable .inactiveTab {
+				background-color: #AAAAAA; /*#a06060;*/
+				color: black;
+}
+.outerTabTable .activeTab {
+				background-color: gray; /*#a06060;*/
+}
+.outerTabTable .activeData {
+				text-align: left;
+				border-right: 1px solid black;
+				border-bottom: 1px solid black;
+				border-left: 1px solid black;
+				padding: 5px;
+}
+.innerTabTable {
+				background-color: #a8a8bf;
+}
+.innerTabTable .inactiveTab {
+				background-color: #b8b8cf;
+}
+.innerTabTable .activeTab {
+				background-color: #a8a8bf;
+}
+.innerTabTable .activeData {
+				text-align: left;
+				border-right: 1px solid black;
+				border-bottom: 1px solid black;
+				border-left: 1px solid black;
+				padding: 5px;
+}
+td			{
+				font-size: 8pt;
+}
+tr.linkline0	{
+				background-color: #ffffff;
+				cursor: hand;
+}
+tr.linkline1	{
+				background-color: #ffffd0;
+				cursor: hand;
+}
+td.plandetail {	
+		vertical-align: middle;
+		text-align: left;
+		font-size: 7pt;
+		color: black;
+}
+th.plandheader {
+		vertical-align: middle;
+		text-align: left;
+		font-size: 8pt;
+		color: blue;
+}
+.line0	{
+				background-color: #ffffff;
+}
+.line1	{
+				background-color: #ffffd0;
+}
+.mandatory {
+				background-color: #f0fff0;
+}
+.missing {
+				background-color: #fff0f0;
+}
+.amount {
+				text-align: right;
+}
+.readOnlyAmount {
+				text-align: right;
+				border: 2px solid #c8c8df;
+				background: #c8c8df;
+				color: #000000;
+}
+.dataTable {
+				font-size: 8pt;
+				width: 100%;
+				border: 1px solid black;
+}
+.dataTable th {
+				background-color: #f0f0f0;
+				border-right: 1px solid black;
+				border-bottom: 1px solid black;
+				margin: 5px;
+				vertical-align: bottom;
+				text-align: center;
+}
+.dataTable td {
+				border: 1px solid #eeeeee;
+				padding: 0px 2px;
+				text-align: right;
+}
+.displaydetails {
+				background-color: #a8a8bf;
+				border: 1px solid black;
+}
+.displaydetails th {
+				text-align: center;
+				vertical-align: bottom;
+				padding-left: 5px;
+}
+.displaydetails td {
+				background-color: #f0f0f0;
+				border: 1px solid black;
+				padding: 1px 2px 1px 3px;
+}
+th.versioninfo {
+				vertical-align: middle;
+				text-align: left;
+				font-size: 7pt;
+				color: blue;
+				background-color: transparent;
+				font-weight: bold;
+}
+td.versioninfo {
+				vertical-align: middle;
+				text-align: left;
+				font-size: 7pt;
+				color: black;
+}
+.rowradio {
+				margin: -3px 0px;
+}
+A {
+		text-decoration: none;
+				color: #0000ff;
+}
+A:hover {
+				color: #ff0000;
+}
+A:active {
+}
+A:visited {
+}
+A:link {
+}
+div#scrollDiv{ scrollbar-arrow-color: #FFF; overflow: scroll height: 100;}

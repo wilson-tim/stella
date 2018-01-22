@@ -1,0 +1,84 @@
+<!-- 
+firstChoiceCommon Ant Build Script
+author: Richard Johnson
+date  : 23/10/2008
+
+the explicit use of basedir is not essential, but useful for testing the script
+-->
+<project name="viking" default="all" basedir="..">
+
+	<property environment="env"/>
+	<property name="build.properties" location="${basedir}/build/build.properties"/>
+	<property name="version.properties" location="${basedir}/build/version.properties"/>
+	
+	<property file="${build.properties}"/>
+	<property file="${version.properties}" />
+	<!-- exclude libraries that should already be present in servlet/jsp container -->
+	<!-- also exclude oracle driver lib as this should also be on destination server -->
+	<fileset id="lib.includes" dir="${libs.dir}">
+		<exclude name="servlet-api.jar"/>
+		<exclude name="j2ee-1.0.jar"/>
+		<exclude name="jsp-api.jar"/>
+		<exclude name="junit-3.8.2.jar"/>
+	</fileset>
+	
+	<target name="all" depends="clean, compile, package" />
+	
+	<!-- originally the classpath is simply all libraries, this may change -->
+	<path id="main-classpath">
+		<fileset dir="${libs.dir}" includes="*.jar" />
+	</path>
+	<!-- create the output folders -->
+	<target name="init" description="create the required output folders">
+		<mkdir dir="${target.dir}"/>
+		<mkdir dir="${target.classes.dir}"/>
+		<mkdir dir="${target.dist.dir}"/>		
+	</target>
+	<!-- remove any compiled files -->
+	<target name="clean" description="remove all compiled files and packages">
+		<delete dir="${target.dir}"/>
+	</target>
+
+	<!-- compile the code using source=1.4 and target=1.4 to enable the use of enum as a variable name -->
+	<!-- there are no test classes or resources, however include these in the compilation in case some are 
+			added in future -->
+	<target name="compile" description="compile the java files to classes" depends="init">
+		<javac classpathref="main-classpath" srcdir="${main.src.dir}" destdir="${target.classes.dir}" 
+			target="1.4" source="1.4" deprecation="true">			
+			<sourcepath path="${main.resources.dir}"/>
+			<sourcepath path="${test.src.dir}"/>
+			<sourcepath path="${test.resources.dir}"/>
+		</javac>
+		<!-- move any resources over to classes -->
+		<copy includeemptydirs="true" overwrite="false" todir="${target.classes.dir}">
+			<fileset dir="${main.src.resources.dir}">
+				<exclude name="*.jar"/>
+			</fileset>			
+		</copy>
+	</target>
+	<!-- jar up the compiled source -->
+	<target name="package" depends="compile">
+		<war destfile="${target.dist.dir}/${dist.name}.war" basedir="${webapp.dir}" duplicate="fail">
+			<lib refid="lib.includes"/>
+			<classes dir="${target.classes.dir}"/>
+		</war>
+	</target>	
+	<!-- CI target -->
+	<target name="cruise.control" depends="clean, cvs.update, all, distribute" description="run by the continuous build"/>
+	
+	<!-- CVS target, note for the update to work it must have been first checked out to the given location by the given user -->
+	<!-- note BUISDEV_CVSROOT is an environment variable on the build server -->
+	<target name="cvs.update">
+		<cvs dest="${basedir}"
+			 command="update -C -P -A -d"
+		 	 cvsRoot="${env.BUISDEV_CVSROOT}"
+		 	 failonerror="true"			
+		 	 compressionlevel="9"
+			 tag="release_${version}"/>
+	</target>
+	<!-- distribute mechanism, simply copy distributable to webapp location -->
+	<target name="distribute" depends="package">
+		<copy tofile="${artifacts.dir}/${dist.name}-${version.major}.${version.minor}.${version.patch}.war" file="${target.dist.dir}/${dist.name}.war"/>
+	</target>
+
+</project>

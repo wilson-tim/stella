@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN" "http://java.sun.com/dtd/application_1_3.dtd">
+<application id="Application_ID">
+	<display-name>StellaEAR</display-name>
+	<module id="WebModule_1108651326328">
+		<web>
+			<web-uri>Stella.war</web-uri>
+			<context-root>/stella</context-root>
+		</web>
+	</module>
+	
+	<security-role>
+		<role-name>STELLA_CUST_SERVICES</role-name>
+	</security-role>
+	<security-role>
+		<role-name>STELLA_SUPERVISOR</role-name>
+	</security-role>
+	<security-role>
+		<role-name>STELLA_BSP_EXECUTIVE</role-name>
+	</security-role>
+	<security-role>
+		<role-name>STELLA_PRODUCT_EXECUTIVE</role-name>
+	</security-role> 
+ 
+</application>

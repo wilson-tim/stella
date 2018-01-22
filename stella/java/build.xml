@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<project name="stella-java" default="clean">
+
+	<property name="ant.dir" value="ant-files"/>
+	
+	<!--//standard properties//-->
+	<import file="${ant.dir}/properties.xml"/>
+		
+	<!--//extra properties start//-->
+	<!--//extra properties end//-->
+	
+	<!--//generic classpaths//-->
+	<import file="${ant.dir}/classpath.xml"/>
+		
+	<!--//generic targets//-->
+	<import file="${ant.dir}/targets.xml"/>
+	
+</project>

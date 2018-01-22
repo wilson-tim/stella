@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<project name="stella-java classpaths" basedir="." default="archive">
+<!--//path deatils start//-->
+<path id="application.classpath">
+  <fileset dir="${libs.dir}">
+    <include name="**/*.zip" />
+    <include name="**/*.jar" />
+  </fileset>
+</path>
+ <path id="test.classpath">
+  <fileset dir="${junit.lib}">
+    <include name="**/*.zip" />
+    <include name="**/*.jar" />
+  </fileset>
+  <fileset dir="${test.libs.dir}">
+    <include name="**/**/*.jar" />
+  </fileset>
+</path>
+<!--//path deatils start//-->
+</project>

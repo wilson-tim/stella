@@ -1,0 +1,257 @@
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+
+	<!-- ========== Form Bean Definitions =================================== -->
+	<form-beans>
+
+		<!-- Used to save the search criteria when Search is submitted -->
+		<form-bean name="searchform"
+			type="uk.co.firstchoice.viking.gui.SearchFormBean" />
+
+		<!-- Used to save the operations criteria when Operations screen is opened or submitted -->
+		<form-bean name="operationsform"
+			type="uk.co.firstchoice.viking.gui.OperationsFormBean" />
+
+		<!-- Used to hold the ammended flight details when the flight details pop-up is submitted -->
+		<form-bean name="flightdetailform"
+			type="uk.co.firstchoice.viking.gui.FlightDetailsFormBean" />
+
+		<!-- Used to hold the ammended Flight Operations (routing) details when flight-op pop-up is submitted -->
+		<form-bean name="flightopform"
+			type="uk.co.firstchoice.viking.gui.FlightOpFormBean" />
+
+		<!-- Used to hold the ammended sales or purchasing data when the sales/purchasing pop-up is submitted -->
+		<form-bean name="sellbuyform"
+			type="uk.co.firstchoice.viking.gui.SellBuyFormBean" />
+
+		<!-- Used to hold the Revenue Accounts details when submitted -->
+		<form-bean name="accountdetailsform"
+			type="uk.co.firstchoice.viking.gui.AccountsFormBean" />
+
+		<!-- Used to hold the ammended contract details when the contract details pop-up is submitted -->
+		<form-bean name="revenueaccountform"
+			type="uk.co.firstchoice.viking.gui.RevenueAccountFormBean" />
+
+		<!-- Used to hold the ammended contract details when the contract details pop-up is submitted -->
+		<form-bean name="contractdetailsform"
+			type="uk.co.firstchoice.viking.gui.ContractDetailsFormBean" />
+
+		<form-bean name="versionform"
+			type="uk.co.firstchoice.viking.gui.VersionFormBean" />
+
+		<form-bean name="displaycapacityform"
+			type="uk.co.firstchoice.viking.gui.DisplayCapacityFormBean" />
+		<form-bean name="flightbotbean"
+			type="uk.co.firstchoice.viking.gui.FlightBotFormBean" />
+
+		<form-bean name="paxEditForm"
+			type="uk.co.firstchoice.viking.pax.gui.search.PaxEditForm" />
+
+		<form-bean name="paxSearchForm"
+			type="uk.co.firstchoice.viking.pax.gui.search.PaxSearchForm"/>
+
+	</form-beans>
+
+
+	<global-exceptions>
+		<exception type="java.lang.Exception" key=""
+			path="/exception.jsp" scope="request" />
+	</global-exceptions>
+
+	<global-forwards>
+		<!-- reloadflight is called after a successful save of one of the flight details      -->
+		<!-- pop-up windows. It reloads its parent window (flight view) and closes the window -->
+		<forward name="reloadparent" path="/reloadparent.jsp" />
+	</global-forwards>
+
+	<!-- ========== Action Mapping Definitions ============================== -->
+	  <action-mappings>
+
+		<!-- Start or perform search and display search screen -->
+		<action path="/menu"
+			type="uk.co.firstchoice.viking.gui.MenuAction"
+			validate="false">
+			<forward name="success" path="/menu.jsp" />
+		</action>
+
+		<!-- Start or perform search and display search screen -->
+		<action path="/search"
+			type="uk.co.firstchoice.viking.gui.SearchAction"
+			name="searchform" scope="session" validate="false">
+			<forward name="success" path="/search.jsp" />
+		</action>
+
+		<!-- Start or save operations -->
+		<action path="/operations"
+			type="uk.co.firstchoice.viking.gui.OperationsAction"
+			name="operationsform" scope="request" validate="false">
+			<forward name="success" path="/operations.jsp" />
+		</action>
+		<!-- Start or revisit planning screen -->
+
+		<!-- -->
+		<!-- Find the required Flight Op, Selling & Purchasing data (if any) and display FlightOp screen -->
+
+
+		<!-- Start Flight Details pop-up screen to edit or add flight details -->
+		<action path="/flightdetails"
+			type="uk.co.firstchoice.viking.gui.FlightDetailsAction"
+			name="flightdetailform" scope="request" validate="false">
+			<forward name="showedit" path="/editseries.jsp" />
+		</action>
+
+		<!-- Start Flight Operational Details pop-up screen -->
+		<action path="/flightopdetails"
+			type="uk.co.firstchoice.viking.gui.FlightOpAction"
+			name="flightopform" scope="request" validate="false">
+			<forward name="success" path="/editopdetails.jsp" />
+		</action>
+
+		<!-- Start or revisit planning screen -->
+		<action path="/flightsellbuy"
+			type="uk.co.firstchoice.viking.gui.SellBuyAction"
+			name="sellbuyform" scope="request" validate="false">
+			<forward name="success" path="/editchsup.jsp" />
+			<forward name="display_warning" path="/displayAllocationWarning.jsp" />
+		</action>
+
+		<!-- Start Revenue Accounts -->
+		<action path="/revenueaccount"
+			type="uk.co.firstchoice.viking.gui.RevenueAccountAction"
+			name="revenueaccountform" scope="request" validate="false">
+			<forward name="success" path="/revenueaccounts.jsp" />
+			<forward name="viewaccount" path="/revenueaccounts.jsp" />
+		</action>
+
+		<!-- Start Contract Details pop-up screen -->
+		<action path="/contractdetails"
+			type="uk.co.firstchoice.viking.gui.ContractDetailsAction"
+			name="contractdetailsform" scope="request" validate="false">
+			<forward name="editaccount" path="/editaccount.jsp" />
+		</action>
+
+		<action path="/editseries" forward="/flightopFS.jsp" />
+
+		<!--action path="/editopdetails" forward="/flighttop" /-->
+
+		<action path="/flighttop"
+			type="uk.co.firstchoice.viking.gui.FlightTopAction">
+			<forward name="success" path="/flightopTop.jsp"
+				redirect="false" />
+		</action>
+
+		<action path="/flightbot"
+			type="uk.co.firstchoice.viking.gui.FlightBotAction"
+			name="flightbotbean" validate="false" scope="request">
+			<forward name="success" path="/flightopBot.jsp"
+				redirect="false" />
+		</action>
+
+		<action path="/versionsmaint"
+			type="uk.co.firstchoice.viking.gui.VersionAction"
+			name="versionform" scope="request" validate="false">
+			<forward name="success" path="/versionmaint.jsp"
+				redirect="false" />
+		</action>
+
+		<action path="/capacitydetailspopup"
+			type="uk.co.firstchoice.viking.gui.DisplayCapacityAction"
+			name="displaycapacityform" validate="false" scope="request">
+			<forward name="success" path="/capacityDetailsPopup.jsp"
+				redirect="false" />
+		</action>
+
+		<action path="/logoff"
+			type="uk.co.firstchoice.viking.gui.MenuAction">
+			<forward name="success" path="/logoff.html"
+				redirect="false" />
+			<forward name="menu" path="/menu.do" redirect="true" />
+		</action>
+
+		<action path="/viewcomments"
+			type="uk.co.firstchoice.viking.gui.CommentDisplayAction">
+			<forward name="success" path="/viewCommentsPopup.jsp"
+				redirect="false" />
+		</action>
+
+		<action path="/showFFA"
+			type="uk.co.firstchoice.viking.gui.FFAAction">
+			<forward name="success" path="/showFFA.jsp"
+				redirect="false" />
+		</action>
+
+		<!--action path="/SeriesSearchResultInc"
+			type="org.apache.struts.actions.ForwardAction" name="searchform"
+			scope="session" input="/seriesSearchResultInc.jsp" />
+
+		<action path="/AllocationSearchResultInc"
+			type="org.apache.struts.actions.ForwardAction" name="searchform"
+			scope="session" input="/allocationSearchResultInc.jsp" /-->
+
+		<!-- Pax search/results/edit actions -->
+		<action
+				path="/pax/index"
+				type="org.apache.struts.actions.ForwardAction"
+				parameter="/pax/paxFrame.jsp"
+		/>
+
+		<action
+				path="/pax/search"
+				name="paxSearchForm"
+				scope="session"
+				parameter="search"
+				type="uk.co.firstchoice.viking.pax.gui.search.PaxSearchAction" >
+			<forward
+				name="success"
+				path="/pax/search.jsp"
+				redirect="false" />
+			<forward
+				name="results"
+				path="/pax/results.jsp"
+				redirect="false" />
+		</action>
+
+		<action
+				path="/pax/results"
+				parameter="results" forward="/pax/results.jsp">
+		</action>
+
+		<action
+				path="/pax/edit"
+				name="paxEditForm"
+				scope="request"
+				parameter="edit"
+				type="uk.co.firstchoice.viking.pax.gui.search.PaxSearchAction"
+				validate="false"
+			>
+			<forward
+				name="success"
+				path="/pax/editableResults.jsp"
+				redirect="false" />
+		</action>
+
+		<!-- Pax report action -->
+		<action
+				path="/pax/report"
+				parameter="report" forward="/pax/report.jsp">
+		</action>
+
+	</action-mappings>
+
+	<!-- ========== Controller Configuration ================================ -->
+
+	<controller>
+		<!--set-property  property="processorClass" value="uk.co.firstchoice.viking.pax.gui.utils.PaxRequestProcessor"/-->
+		<!-- The "input" parameter on "action" elements is the name of a
+			local or global "forward" rather than a module-relative path -->
+		<set-property property="inputForward" value="true" />
+	</controller>
+
+
+  <!-- ========== Message Resources Definitions =========================== -->
+
+  <message-resources parameter="ApplicationResources"/>
+
+  <!-- ========== Plug Ins Configuration ================================== -->
+
+</struts-config>

@@ -1,0 +1,59 @@
+
+table {
+  border-color: #000000;
+  border-spacing: 0px;
+  border-style: solid;
+  border-width: 2px;
+  cell-spacing: 0px;
+}
+
+td, th {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  padding: 2px 0.5em;
+  white-space: nowrap;
+}
+
+td.numeric {
+  text-align: right;
+}
+
+th {
+  background-color: #c0c0c0;
+}
+
+th.mainHeader {
+  background-color: #808080;
+  color: #ffffff;
+  text-align: left;
+}
+
+th a {
+  color: #000080;
+  text-decoration: none;
+}
+
+th a:visited {
+  color: #000080;
+}
+
+th a:active, th a:hover {
+  color: #800000;
+  text-decoration: underline;
+}
+
+tr.alternateRow {
+  background-color: #e0e0e0;
+}
+
+td.sortedColumn {
+  background-color: #f0f0f0;
+}
+
+th.sortedColumn {
+  background-color: #b0b0b0;
+}
+
+tr.alternateRow td.sortedColumn {
+  background-color: #d0d0d0;
+}
