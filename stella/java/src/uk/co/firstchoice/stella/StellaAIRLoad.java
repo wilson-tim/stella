@@ -54,8 +54,10 @@ import uk.co.firstchoice.util.businessrules.NumberProcessor;
  *@author Jyoti Renganathan
  * Added logic to read travelink booking ref from RM ##D line , if it is not found in FPNONREF AGT line
  *
- *
- *
+ *@version 1.4
+ *@author Camila Kill
+ * Modified code to add string occurance of LONVM in MUC1A for Austravel office code ,  int pos1 = StringUtils.searchStringOccur(oneLine,"LONVM",1);
+ * added code to cope with the millionth booking references in travelink
 
 
 /*
@@ -848,7 +850,7 @@ public class StellaAIRLoad {
 					 * additional fare Form of Payment eg FPO/NONREF
 					 * AGT+/CASH/GBP731.00 or FPO/NONREF
 					 * AGT+/CASH/GBP100.00;S2-5;P1
-					 * Ver 1.1 : FPO line received as FPO/NONREF AGT+/NONREF AGT/GBP50.00  , code could not read �50 as no /CASH in it.
+					 * Ver 1.1 : FPO line received as FPO/NONREF AGT+/NONREF AGT/GBP50.00  , code could not read \uFFFD50 as no /CASH in it.
 					 * Fixed by searching for /GBP rather CASH/
 					 */
 
@@ -994,6 +996,10 @@ public class StellaAIRLoad {
 								 application.log.fine("pos1 for LONSH is  " + pos1);
 							}
 
+							if (pos1 <= 0 ){ // look for LONVM
+								 pos1 = StringUtils.searchStringOccur(oneLine,"LONVM",1);
+								 application.log.fine("pos1 for LONVM is  " + pos1);
+							}
 
 							recPseudoCityCode = oneLine.substring(pos1 + 5,pos1 + 9);
 							application.log.fine("pseudocity code   "
@@ -1960,7 +1966,7 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
                                            // int rpos = StringUtils.searchStringOccur(fileRec.recordText,"RM ##D",1);
             
                                             inside_rm = true ;
-                                            group = fileRec.recordText.substring(fileRec.recordText.length() -7, fileRec.recordText.length()-6);
+                                            group = fileRec.recordText.substring(6,7);
                                             recBookingRef = fileRec.recordText.substring(7);
 
                                             application.log.finest(" RM group is " + group);
@@ -2656,4 +2662,3 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 	} // end of populateFare function
 
 }
-
