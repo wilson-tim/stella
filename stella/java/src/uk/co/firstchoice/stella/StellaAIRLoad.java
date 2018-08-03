@@ -39,11 +39,11 @@ import uk.co.firstchoice.util.businessrules.NumberProcessor;
  *
  * @version 1.1
  * @author Jyoti
- * This release is to support AIR load program to work with H&J tickets
+ * This release is to support AIR load program to work with HandJ tickets
  * Fixed some bugs :
  * 1) Exchange tickets were  not picking up additional collection amount from FPO line , as CASH word was missing.
  * 2) aria 19 Pax type  , Children were loaded as Adult when DOB information is there, this is fixed by changing search logic
- * 3) aria 20 - Psueudo city code , start position corrected
+ * 3) aria 20 Pseudo city code , start position corrected
  * 4) Fixed Critical error - when ticket type is blank , program should default it to
  *
  *@version 1.2
@@ -52,12 +52,49 @@ import uk.co.firstchoice.util.businessrules.NumberProcessor;
  *
  *@version 1.3
  *@author Jyoti Renganathan
- * Added logic to read travelink booking ref from RM ##D line , if it is not found in FPNONREF AGT line
+ *Added logic to read travelink booking ref from RM ##D line , if it is not found in FPNONREF AGT line
  *
  *@version 1.4
  *@author Camila Kill
- * Modified code to add string occurance of LONVM in MUC1A for Austravel office code ,  int pos1 = StringUtils.searchStringOccur(oneLine,"LONVM",1);
- * added code to cope with the millionth booking references in travelink
+ *Modified code to add string occurrence of LONVM in MUC1A for Austravel office code ,  int pos1 = StringUtils.searchStringOccur(oneLine,"LONVM",1);
+ *added code to cope with the millionth booking references in travelink
+ *
+ *@version 1.5
+ *@author Tim Wilson
+ *18/07/2018
+ *Revised logic to read group code and travelink booking ref from FP NONREFAGT and RM ##D lines
+ *following record structure changes (DWSES-376) and brand code length changes (DWSES-343)
+ *
+ *@version 1.6
+ *@author Tim Wilson
+ *19/07/2018
+ *Revised logging details for clarity (DWSES-377)
+ *
+ *@version 1.7
+ *@author Tim Wilson
+ *19/07/2018
+ *New processing for taxAmt == "EXEMPT" (DWSES-372)
+ *
+ *@version 1.8
+ *@author Tim Wilson
+ *19/07/2018
+ *New processing for recCommPct when refund ticket (DWSES-371); also related fix for FP records of the form FPNONREFAGTA1159137/GBP119.91
+ *
+ *@version 1.9
+ *@author Tim Wilson
+ *19/07/2018
+ *Bug fix for collectionAmt assignment (DWSES-368)
+ *RM line processing check whether group and recBookingRef are already assigned (DWSES-389)
+ *
+ *@version 1.10
+ *@author Tim Wilson
+ *20/07/2018
+ *Bug fix for exchange ticket processing (DWSES-373)
+ *01 Debugged during first round of testing
+ *02 Debugged during second round of testing
+ *
+ *
+ */
 
 
 /*
@@ -81,6 +118,7 @@ import uk.co.firstchoice.util.businessrules.NumberProcessor;
  */
 
 public class StellaAIRLoad {
+    
 
 	// Class constants
 	private static final String programName = "StellaAIRLoad";
@@ -193,7 +231,7 @@ public class StellaAIRLoad {
 	 * @param dbUserPwd
 	 *            database user password
 	 * @param singleFileName
-	 *            if want to run in singlefile mode then specify a filename
+	 *            if want to run in single file mode then specify a filename
 	 *            (without directory) here, otherwise pass ""
 	 * @param runMode
 	 *            Test or Live : determines if in debug mode
@@ -218,7 +256,7 @@ public class StellaAIRLoad {
 					  // happened
 		String logFileReturnValue = "";
 		String logLevel; // min logging level to be logged
-		String specialistPseudoList; // comma seperated list of all the specialist pseudo city code from registry
+		String specialistPseudoList; // comma separated list of all the specialist pseudo city codes from registry
 
 		// Create a instance of StellaAIRLoad class
 		StellaAIRLoad f = new StellaAIRLoad();
@@ -270,7 +308,7 @@ public class StellaAIRLoad {
 					//  ddlFileName =
 					// application.getRegisteryProperty("LocalDDLFileName");
 
-					application.log.info("Database:" + connectionURL + ","
+					application.log.info("Database: " + connectionURL + ","
 							+ driverClass + "," + dbUserID + "," + dbUserPwd);
 
 				} else {
@@ -319,8 +357,9 @@ public class StellaAIRLoad {
 											 // to file
 			logFileName = programShortName.toLowerCase() + "_"
 					+ (FileUtils.fileGetTimeStamp()) + ".log";
-			application.log.config("Log level is:" + logLevel);
+			application.log.config("Log level is: " + logLevel);
 			application.log.config("Logfile is: " + logFileName);
+			System.out.println("Log level is: " + logLevel);
 			System.out.println("Logfile is: " + logFileName);
 			application.log.setLoggerFile(new File(logPath, logFileName));
 
@@ -342,11 +381,11 @@ public class StellaAIRLoad {
 			//
 
 			application.log.info(programName + " v." + programVersion);
-			application.log.config("Runmode:" + runMode);
+			application.log.config("Runmode: " + runMode);
 			application.log.info("START "
 					+ java.util.Calendar.getInstance().getTime());
 			application.log
-					.config("Access mode:" + application.getAccessMode());
+					.config("Access mode: " + application.getAccessMode());
 
 			try {
 				application.log.config("Name         => "
@@ -435,14 +474,14 @@ public class StellaAIRLoad {
                         
                         String[] contents =  fileDataDirectory.list();
                         java.util.Arrays.sort(contents);
-                        application.log.info(contents.length + " files in data directory:");
+                        application.log.info(contents.length + " files in data directory.");
 
                         // for (File file : files) {
 
 
                         
                         if (debugMode) {
-				application.log.fine("List of files to be proc:");
+				application.log.fine("List of files to be processed:");
 				for (int i = 0; i < contents.length; i++) {
 					File indFile = new File(
 							fileDataDirectory.getAbsolutePath(), contents[i]);
@@ -466,7 +505,7 @@ public class StellaAIRLoad {
 				} else {
 					// single file name passed from command line parameters,
 					// check it exists
-					application.log.info("Single file mode:" + singleFileName);
+					application.log.info("Single file mode: " + singleFileName);
 					fileToProcess = new File(fileDataDirectory, singleFileName);
 				}
 
@@ -645,12 +684,16 @@ public class StellaAIRLoad {
 		// end of class - report to console as well as log
 
 		System.out.println("Files Read:" + numFilesRead);
+		if (!singleFileName.equalsIgnoreCase("none")) {
+			System.out.println("Was in SingleFileMode:" + singleFileName);
+		}
 		System.out.println("Files in success:" + numFilesSuccess);
 		System.out.println("Files in error:" + numFilesError);
 		System.out.println("Files in recycle:" + numFilesRecycle);
 		System.out.println("Num tkts inserted:" + numRowsInserted);
 
-		System.out.println(programName + " ended");
+		System.out.println(programName + " COMPLETE "
+				+ java.util.Calendar.getInstance().getTime());
 
 		return "OK" + logFileReturnValue;
 
@@ -665,9 +708,13 @@ public class StellaAIRLoad {
 	 *            true if debug on, false if not on
 	 * @param conn
 	 *            the connection object
+     * @param voidTicketInitials
+     *            default ticket agent id
+     * @param specialistPseudoList
+     *            comma separated list of all the specialist pseudo city codes from the registry
 	 * @throws SQLException
 	 *             sql error has occurred
-	 * @return 0 - sucsess, 1 - data related error e.g foreign key problem, 2 -
+	 * @return 0 - success, 1 - data related error e.g foreign key problem, 2 -
 	 *         error in file layout, 3 - critical error
 	 */
 
@@ -722,6 +769,7 @@ public class StellaAIRLoad {
 			//String recTourCodeType = "";
 			String recInsertUpdateFlag = "I"; // initially an insert
 			String recExchangeTicketNo = "";
+			String recExchangeTicketNos = "";
 			String recPseudoCityCode = "";
 			String recFareBasisCode = "";
 			String recPNRdate = "";
@@ -769,24 +817,25 @@ public class StellaAIRLoad {
 			int insertedTickets = 0;
 			Date finalDeptDate = null;
 			//  String conjTktInd = "N" ;
-			int dashPos = 0, dashOccur = 3;
+			int dashPos = 0, dashOccur = 3, foLen = 0;
 			double totalAdditionalTax = 0;
 			int tktIssueMonth = 0;
 			int tktIssueYear = 0;
 			int depYear = 0 ;
 			String maxConjTktNum;
+            String maxConjExchTktNum;
 
 			boolean taxFound = false;
 			boolean UnpaidTaxFound = false;
 
 			int lineLength;
 			String collectionAmt = "0";
-			String group = "" ;  // default to H&J branch group , try again in stored procedure to find a group
+			String group = "" ;  // default to HandJ branch group , try again in stored procedure to find a group
                         boolean inside_rm = false;
 
 			ResultSet rs;
 
-			application.log.finest("F: " + fileToProcess.getName());
+			application.log.finest("F:" + fileToProcess.getName());
 
 			// now actually process the file
 
@@ -827,7 +876,7 @@ public class StellaAIRLoad {
 				// Now check if the file had END line at the last line if not
 				// this is incomplete file so rename with error suffix and move
 				// to error directory
-				//  non-critical error , log and move on tonext airfile
+				// non-critical error, log and move on to next air file
 
 				stage = "Checking for END of file indicator";
 				theFile = new FileReader(fileToProcess);
@@ -842,7 +891,6 @@ public class StellaAIRLoad {
 							&& (oneLine.substring(0, 2).equalsIgnoreCase("FO"))) {
 						exchangeFound = true;
 					}
-					;
 
 					/*
 					 * This code is added here so that when reading through fare
@@ -860,21 +908,17 @@ public class StellaAIRLoad {
 
 						//int slashPos = oneLine.indexOf("CASH/");
 						int slashPos = oneLine.indexOf("/GBP");  // pos 26
-						int pos = oneLine.indexOf(";"); // either -1 for not fo
+						int endPos   = oneLine.indexOf(";"); // either -1 for not fo
 
-						// The end position of Amount is either upto first
-						// semicolon or upto end of line length
+						// The end position of Amount is either up to first
+						// semicolon or up to end of line length
 						if (slashPos > 0) {
-							if (pos > 0) {
-								collectionAmt = oneLine.substring(slashPos + 8,
-										pos);
+							if (endPos > 0) {
+								collectionAmt = oneLine.substring(slashPos + 4, endPos);
 							} else {
-								
-								eg:
 								collectionAmt = oneLine.substring(slashPos + 4,	oneLine.length()); 
-								// collectionAmt = oneLine.substring(slashPos + 8,	oneLine.length());
-								
 							}
+                                                        application.log.fine("collectionAmt " + collectionAmt);
 						}
 
 						/*
@@ -888,11 +932,11 @@ public class StellaAIRLoad {
 				} // end of while
 
 				// Here last line can be END or ENDX , 'X' is used in the last
-				// of a stream of AIR records being trasmitted
+				// of a stream of AIR records being transmitted
 				if (!(lineData.equalsIgnoreCase("END") || lineData
 						.equalsIgnoreCase("ENDX"))) {
-					application.log.severe("f: " + fileToProcess.getName()
-							+ ", missing END of file inididcator ");
+					application.log.severe("F:" + fileToProcess.getName()
+							+ ", missing END of file indicator ");
 					return 2;
 				}
 
@@ -900,7 +944,7 @@ public class StellaAIRLoad {
 
 			catch (IOException e) {
 				System.out.println(e);
-				application.log.severe("ERROR i/o error datafile "
+				application.log.severe("ERROR i/o error datafile (2) "
 						+ fileToProcess);
 				application.log.severe(String.valueOf(e));
 				return 3;
@@ -912,7 +956,7 @@ public class StellaAIRLoad {
 				} catch (IOException e) {
 					System.out.println(e);
 					application.log
-							.severe("ERROR i/o error closing datafile (2) :"
+							.severe("ERROR i/o error closing datafile (2) "
 									+ fileToProcess);
 					return 3;
 				}
@@ -943,7 +987,7 @@ public class StellaAIRLoad {
 
 					} //Line length more than 2 characters
 
-					// $$$$$$$$$ Code here to stop index out odf bound error
+					// $$$$$$$$$ Code here to stop index out of bound error
 					if ((lineLength > 2)
 							&& (recID.equals("AI") || recID.equals("MU")
 									|| recID.equals("C-") || recID.equals("D-")
@@ -983,26 +1027,26 @@ public class StellaAIRLoad {
 											+ pos);
 							// starts after 9th semicolon
 							recIATANum = oneLine.substring(pos + 1, pos + 9);
-							application.log.fine("iata num  " + recIATANum);
+							application.log.fine("iata num " + recIATANum);
 
 							// aria 20 , staring position is changed to pos1 + 6 (it was 5 before and  storing C3100 in db)
 							// starts after 2nd semicolon ,  not for Galileo booking , it comes after 4th semicolon , so rather searching for LONFC
 							int pos1 = StringUtils.searchStringOccur(oneLine,"LONFC",1);
 
-							application.log.fine("pos1 for LONFC is  " + pos1);
+							application.log.fine("pos1 for LONFC is " + pos1);
 
 							if (pos1 <= 0 ){ // look for LONSH
 								 pos1 = StringUtils.searchStringOccur(oneLine,"LONSH",1);
-								 application.log.fine("pos1 for LONSH is  " + pos1);
+								 application.log.fine("pos1 for LONSH is " + pos1);
 							}
 
 							if (pos1 <= 0 ){ // look for LONVM
 								 pos1 = StringUtils.searchStringOccur(oneLine,"LONVM",1);
-								 application.log.fine("pos1 for LONVM is  " + pos1);
+								 application.log.fine("pos1 for LONVM is " + pos1);
 							}
 
 							recPseudoCityCode = oneLine.substring(pos1 + 5,pos1 + 9);
-							application.log.fine("pseudocity code   "
+							application.log.fine("pseudocity code "
 									+ recPseudoCityCode);
 						}
 
@@ -1012,7 +1056,7 @@ public class StellaAIRLoad {
 							if (recID.equalsIgnoreCase("C-")) {
 								stage = "processing C- for agent initials";
 								recTicketAgent = oneLine.substring(21, 23);
-								application.log.fine("recTicketAgent"
+								application.log.fine("recTicketAgent "
 										+ recTicketAgent);
 							}
 							// D- record - get ticket issue date
@@ -1033,9 +1077,9 @@ public class StellaAIRLoad {
 								tktIssueYear = tktIssueYear + 2000 ; // get year in 2007 YYYY format
 								application.log.fine("tktIssueYear "	+ tktIssueYear);
 
-								application.log.fine("recTicketDate"
+								application.log.fine("recTicketDate "
 										+ recTicketDate);
-								application.log.fine("recPNRdate" + recPNRdate);
+								application.log.fine("recPNRdate " + recPNRdate);
 
 								if (!DateProcessor.checkDate(recTicketDate,
 										"yymmdd")
@@ -1043,7 +1087,7 @@ public class StellaAIRLoad {
 												"yymmdd")) { // validate date
 															 // format
 									application.log.severe("F:"
-											+ fileToProcess.getName() + ",PNR:"
+											+ fileToProcess.getName() + ",PNR Date:"
 											+ recPNRdate + " or Ticket Date:"
 											+ recTicketDate
 											+ " is invalid date format error");
@@ -1090,7 +1134,7 @@ public class StellaAIRLoad {
 								int deptMonth = DateProcessor.findMonthNumber(
 										recDeptDate, "ddMMM"); // return month
 															   // number
-								//application.log.fine(("recDEptDate mont no is = " + deptMonth);
+								//application.log.fine(("recDEptDate month no is = " + deptMonth);
 
 								//Calendar cal = Calendar.getInstance();
 								//int thisYear = (cal.get(Calendar.YEAR)); // returns 2007
@@ -1282,7 +1326,7 @@ public class StellaAIRLoad {
 									// if there is additional collection than it
 									// will be same as collection amt at FPO
 									// record
-									if (recPublishedFare != ""){
+									if (!recPublishedFare.equals("")) {
 									if ((Double.parseDouble(recPublishedFare)) != (Double
 											.parseDouble(collectionAmt))) {
 										recPublishedFare = "0";
@@ -1441,6 +1485,9 @@ public class StellaAIRLoad {
 												taxAmt = (chunk.substring(4,
 														chunk.length() - 5))
 														.trim();
+                                                        
+                                                taxAmt = taxAmt.replaceAll("EXEMPT","0.00");
+                                                
 												if (!NumberProcessor
 														.validateStringAsNumber(taxAmt)) {
 													// invalid number
@@ -1665,7 +1712,7 @@ public class StellaAIRLoad {
 
 			catch (IOException e) {
 				System.out.println(e);
-				application.log.severe("ERROR i/o error datafile "
+				application.log.severe("ERROR i/o error datafile (3) "
 						+ fileToProcess);
 				application.log.severe(String.valueOf(e));
 				return 3;
@@ -1677,7 +1724,7 @@ public class StellaAIRLoad {
 				} catch (IOException e) {
 					System.out.println(e);
 					application.log
-							.severe("ERROR i/o error closing datafile (2) :"
+							.severe("ERROR i/o error closing datafile (3) "
 									+ fileToProcess);
 					return 3;
 				}
@@ -1686,7 +1733,7 @@ public class StellaAIRLoad {
 			// now process that vector of records we have built up
 			// this is done so we can cope with repeating record types e.g
 			// passengers I- records
-			// Conjuctive type tickets etc.
+			// Conjunctive type tickets etc.
 			//while (recData.hasNext()) {
 
 			recCounter = 0;
@@ -1771,13 +1818,13 @@ public class StellaAIRLoad {
 
 				while (recData.hasMoreElements()
 						&& !fileRec.recordID.equals("I-")) {
-//application.log.finest("this rec  : "+ fileRec.recordText);
+//application.log.finest("this rec : "+ fileRec.recordText);
 //application.log.finest( "index of RM ##D : " + fileRec.recordText.startsWith("RM ##D"));
 					if (fileRec.recordID.equals("T-")) {
 
 						// Recover all fare values which was set to 0 for
-						// conjuction dummies
-						System.out.println("inside T record  published Fare"
+						// conjunctive dummies
+						System.out.println("inside T record published Fare"
 								+ recPublishedFare);
 
 						insPublishedFare = recPublishedFare;
@@ -1794,19 +1841,19 @@ public class StellaAIRLoad {
 						recTicketNo = fileRec.recordText.substring(7, 17);
 						System.out.println("recTicketNo" + recTicketNo);
 
-						//if (lineLength > 17 ) { conjTktInd = "Y" ; } // i.e
-						// it is conjuction/linked ticket
+						// if (lineLength > 17 ) { conjTktInd = "Y" ; } // i.e
+						// it is conjunctive/linked ticket
 
 						dashOccur = 3;
 						dashPos = StringUtils.searchStringOccur(
 								fileRec.recordText, "-", dashOccur);
 
-						//  commented as always one dash and there will be range
-						// eg T-A117-123456789-99 , need to cover all missing
+						// commented as always one dash and there will be range
+						// e.g. T-A117-123456789-99 , need to cover all missing
 						// number in between
 						/*
 						 * while (dashPos > 0) { // find out how many
-						 * linked/conjuctive tickets, ++noOfConjTkts ; dashPos =
+						 * linked/conjunctive tickets, ++noOfConjTkts ; dashPos =
 						 * StringUtils.searchStringOccur(fileRec.recordText,"-",dashOccur +
 						 * 1); }
 						 */
@@ -1823,7 +1870,7 @@ public class StellaAIRLoad {
 							}
 						} else {
 							maxConjTktNum = recTicketNo;
-						} // If no conjuction ticket it will be defaulted to
+						} // If no conjunctive ticket it will be defaulted to
 						  // ticket number
 
 						application.log.fine("maxConjTktNum " + maxConjTktNum);
@@ -1857,38 +1904,48 @@ public class StellaAIRLoad {
 							&& (!((fileRec.recordText.substring(0, 3))
 									.equalsIgnoreCase("FMB")))) {
 
-						stage = "processing T- for ticket no";
-						int pos = fileRec.recordText.indexOf(";"); // returns -1
-																   // if not
-																   // found
-						if (pos < 0) {
-							pos = fileRec.recordText.length();
-						} // Here if no semicolon means it is manual commission
-						  // eg FM*M*8
+						stage = "processing FM for commission amount";
 
 						int startPos = StringUtils.searchStringOccur(
 								fileRec.recordText, "*", 2); // start position
 															 // for amount / pct
 
-						if (fileRec.recordText.substring(pos - 1, pos)
-								.equalsIgnoreCase("A")) { // commission amt
-							recCommAmt = fileRec.recordText.substring(
-									startPos + 1, pos - 1);
-						} else { // commission pct
-							recCommPct = fileRec.recordText.substring(
-									startPos + 1, pos);
-						}
+                        if (startPos < 0) {
+                            // Assuming recordText starts with "FM" so not startPos = 0
+                            startPos = 1;
+                        }
+                        
+						int fmEndPos = fileRec.recordText.indexOf(";"); // returns -1
+																   // if not
+																   // found
+						if (fmEndPos < 0) {
+							fmEndPos = fileRec.recordText.length();
+						} // Here if no semicolon means it is manual commission
+						  // eg FM*M*8
+
+                        if (fileRec.recordText.substring(fmEndPos - 1, fmEndPos)
+                                .equalsIgnoreCase("P")) { // "P" commission pct
+                            recCommPct = fileRec.recordText.substring(
+                                    startPos + 1, fmEndPos - 1);
+                        } else if (fileRec.recordText.substring(fmEndPos - 1, fmEndPos)
+                                .equalsIgnoreCase("A")) { // "A" commission amt
+                            recCommAmt = fileRec.recordText.substring(
+                                    startPos + 1, fmEndPos - 1);
+                        } else { // other
+                            recCommAmt = fileRec.recordText.substring(
+                                    startPos + 1, fmEndPos);
+                        }
 					} // end of FM
 
 					// Tour Code Can start with FTIT (BT / IT) or FTNR( Net
 					// remitt),
 					// Tour Code can be very long so make sure you get maximum
 					// of 15 chars
-					// look for ;S if found than take upto that or else
-					// look for ;P if found than take upto that or else till end
+					// look for ;S if found than take up to that or else
+					// look for ;P if found than take up to that or else till end
 					// of line.
 
-					// If Tour Code is bigger than 15 chars than truncate it .
+					// If Tour Code is bigger than 15 chars than truncate it
 					else if (fileRec.recordID.equals("FT")) {
 						stage = "processing FT for tour code";
 						int spos = fileRec.recordText.indexOf(";S");
@@ -1908,90 +1965,168 @@ public class StellaAIRLoad {
 
 					// Original Issue / In Exchange For
 					else if (fileRec.recordID.equals("FO")) {
+                        // Example FO1252570513764LON15MAY1891278401
+                        //         the airline code is 125 (always 3 digits) and the exchange ticket no is 2570513764
 						stage = "processing FO for exchange ticket no";
 						exchangeFound = true;
-						recExchangeTicketNo = fileRec.recordText.substring(6,16);
-					}
+
+                        String foRecord = "";
+                        dashOccur = 1;
+                        dashPos = StringUtils.searchStringOccur(
+                                fileRec.recordText, "-", dashOccur);
+                        if (dashPos == 5) {
+                            // e.g. FO006-2570769969-70LON24MAY18/91212295/006-25707699694E1234*I;S4-8;P3
+                            foRecord = fileRec.recordText.substring(6);
+                        } else {
+                            // e,g, :FO1572570111863LON30APR1891278401
+                            foRecord = fileRec.recordText.substring(5);
+                        }
+
+                        foLen = foRecord.length();
+
+                        // Loop to the end of the exchange ticket number
+                        if (foLen > 10) {
+                            int foEndPos = 0;
+                            while ((foEndPos < foLen) && (recExchangeTicketNos.equals(""))) {
+                                if ((foRecord.charAt(foEndPos) >= 'A') && (foRecord.charAt(foEndPos) <= 'Z')) {
+                                    recExchangeTicketNos = foRecord.substring(0, foEndPos);
+                                } else {
+                                    foEndPos = foEndPos + 1;
+                                }
+                            }
+                        }
+
+                        application.log.fine("recExchangeTicketNos " + recExchangeTicketNos);
+
+
+                        // commented as always one dash and there will be range
+                        // e.g. FO006-123456789-99 , need to cover all missing
+                        // number in between
+                        /*
+                         * while (dashPos > 0) { // find out how many
+                         * linked/conjunctive tickets, ++noOfConjTkts ; dashPos =
+                         * StringUtils.searchStringOccur(fileRec.recordText,"-",dashOccur +
+                         * 1); }
+                         */
+                        // Check for exchange ticket number range
+                        dashOccur = 1;
+                        dashPos = StringUtils.searchStringOccur(
+                                recExchangeTicketNos, "-", dashOccur);
+                        if (dashPos > 0) {
+                            recExchangeTicketNo = recExchangeTicketNos.substring(0,dashPos);
+                            if ((recExchangeTicketNos.substring(dashPos + 1,
+                                            dashPos + 3)).equalsIgnoreCase("00")) {
+                                    maxConjExchTktNum = Long.toString(Long
+                                                    .parseLong(recExchangeTicketNo) + 1);
+                            } else {
+                                    maxConjExchTktNum = recExchangeTicketNo.substring(0, 8)
+                                                    + recExchangeTicketNos.substring(
+                                                                    dashPos + 1, dashPos + 3);
+                            }
+                        } else {
+                            recExchangeTicketNo = recExchangeTicketNos;
+                            maxConjExchTktNum = recExchangeTicketNo;
+                        } // If no conjunctive ticket it will be defaulted to
+                          // ticket number
+
+                        application.log.fine("maxConjExchTktNum " + maxConjExchTktNum);
+                        
+		    }
 					// FPO record is already read at the beginning to get
 					// collection amt
 
-					//ver 1.1 Read Travel booking ref number from FP (Form of Payment ) record, itour always defaults to 1
-                                        // ver 1.2 new logic , if tlink ref is not found in FP NONref line 
-                                        //         look for RM ##D where booking ref is letter followed by numbers
-
-					
-						// JR added length > 10 to ignore processing for record like eg : FPNONREF, FPNONREF AGT
-					else if ((fileRec.recordID.equals("FP") && (specialistPseudoList.indexOf(recPseudoCityCode) >=  0) && (fileRec.recordText.length() > 14) ) ||
-                                                (fileRec.recordID.equals("RM") && (fileRec.recordText.startsWith("RM ##D") )) )
-                                            {
-
-application.log.finest( "inside for FP or RM record " + fileRec.recordID);
-application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
-
-                                           if (fileRec.recordID.equals("FP")&& (StringUtils.searchStringOccur(fileRec.recordText,"NONREF AGT ",1) > 0) ) {
-						stage = "processing FP for Group and Booking ref for Specialist ";
-						application.log.finest( "inside for FP");
-					 //if (fileRec.recordText.substring(0,24).equals("RM TRAVELINK BOOKING REF")){
+                    // ver 1.1 Read Travel booking ref number from FP (Form of Payment ) record, itour always defaults to 1
+                    // ver 1.2 new logic , if tlink ref is not found in FP NONref line 
+                    //         look for RM ##D where booking ref is letter followed by numbers
+                    // ver 1.5 "NONREF AGT " is now "NONREFAGT"; group codes may be either 1 or 2 characters
 
 
-					  int refPos =  StringUtils.searchStringOccur(fileRec.recordText,"NONREF AGT ",1);
-					  
-					   //if (( refPos > 0) && (fileRec.recordText.substring(refPos + 11,refPos + 12) != ";")){
+                    // JR added length > 10 to ignore processing for record like eg : FPNONREF, FPNONREFAGT
+                    else if ((fileRec.recordID.equals("FP") && (specialistPseudoList.indexOf(recPseudoCityCode) >= 0) && (fileRec.recordText.length() > 14)) || 
+                        (fileRec.recordID.equals("RM") && (fileRec.recordText.startsWith("RM ##D") || fileRec.recordText.startsWith("RM #D")))) {
 
+                        application.log.finest("inside for FP or RM record " + fileRec.recordID);
+                        application.log.finest("first 6 char: " + fileRec.recordText.substring(0, 6));
 
-						if (( refPos > 0) && ((fileRec.recordText.charAt(refPos + 11) >= 'A') &&
-						                      (fileRec.recordText.charAt(refPos + 11) <= 'Z' ) )){
+                        if (fileRec.recordID.equals("FP") && (StringUtils.searchStringOccur(fileRec.recordText, "NONREFAGT", 1) > 0)) {
+                            stage = "processing FP for Group and Booking Ref for Specialist ";
+                            application.log.finest("inside for FP");
+                            application.log.finest("FP line : " + fileRec.recordText);
 
+                            // locate NONREFAGT
+                            int refPos = StringUtils.searchStringOccur(fileRec.recordText, "NONREFAGT", 1);
 
-						
+                            if ((refPos > 0) && (fileRec.recordText.length() > refPos + 9)) {
+                                if ((fileRec.recordText.charAt(refPos + 9) >= 'A') &&
+                                        (fileRec.recordText.charAt(refPos + 9) <= 'Z')) {
 
-						group = fileRec.recordText.substring(refPos + 11,refPos + 12) ;  // find out 3 letter branch code from table
+                                    // locate / or ;S or if ;S not found than total length
+                                    int delimPos = StringUtils.searchStringOccur(
+                                        fileRec.recordText, "/", 2);
 
-						
-						//recBookingRef = fileRec.recordText.substring(refPos + 12,refPos + 18) ;
-						// look for ; or if ; not found than total length
-						int pos = fileRec.recordText.indexOf(";S"); // returns -1, if not found
-						
-						if (pos < 0) { 	pos = fileRec.recordText.length();}
+                                    if (delimPos < 0) {
+                                        delimPos = fileRec.recordText.indexOf("/GBP"); // returns -1, if not found
+                                    }
 
-						recBookingRef = fileRec.recordText.substring(refPos + 12,pos) ;
+                                    if (delimPos < 0) {
+                                        delimPos = fileRec.recordText.indexOf(";S"); // returns -1, if not found
+                                    }
 
-						application.log.fine(" group is " + group);
-						application.log.fine(" booking ref is " + recBookingRef);
-						}
-                                           
-                                          // eg.RM ##DX352331 or RM ##D X352331
-                                           }else if (fileRec.recordText.substring(0,6).equals("RM ##D")){
+                                    if (delimPos < 0) {
+                                        delimPos = fileRec.recordText.indexOf(";P"); // returns -1, if not found
+                                    }
 
-                                           // int rpos = StringUtils.searchStringOccur(fileRec.recordText,"RM ##D",1);
-            
-                                            inside_rm = true ;
-                                            group = fileRec.recordText.substring(6,7);
-                                            recBookingRef = fileRec.recordText.substring(7);
+                                    if (delimPos < 0) {
+                                        delimPos = fileRec.recordText.length();
+                                    }
 
-                                            application.log.finest(" RM group is " + group);
-						application.log.finest(" RM booking ref is " + recBookingRef);
-                                      
-                                        } // Added for version 2, to get tlink from remark line
-                                
-                                         else if (inside_rm && group.equals("")){ // Can not find NONREF AGT OR RM ##D
-					   	application.log.severe("F:" + fileToProcess.getName() +  ",PNR:" + recPNR + "/" +  " tkt:" + recTicketNo +
-					   			" Can not read Tlink ref in FP line or RM line  " + fileRec.recordText );
-						return 2;
+                                    String fprefs = fileRec.recordText.substring(refPos + 9, delimPos).trim();
+                                    group         = fprefs.replaceAll("[0-9\\+]", "");
+                                    recBookingRef = fprefs.replaceAll("[A-Z\\+]", "");
+        
+                                    application.log.fine(" FP group is " + group);
+                                    application.log.fine(" FP booking ref is " + recBookingRef);
+                                }
+                            }
 
-					   } 
+                        // eg. RM ##DX352331 or RM ##D X352331 or RM #DL1189738
+                        } else if (fileRec.recordID.equals("RM") && (fileRec.recordText.substring(0, 6).equals("RM ##D") || fileRec.recordText.substring(0, 5).equals("RM #D"))) {
+                            stage = "processing RM for Group and Booking Ref for Specialist ";
+                            application.log.finest("inside for RM");
+                            application.log.finest("RM line : " + fileRec.recordText);
 
-                                        } // end of else if for FP and RM
-					fileRec = (AirRecord) recData.nextElement();
+                            inside_rm = true;
+
+                            String rmrefs = fileRec.recordText.replaceAll("RM ##D","").replaceAll("RM #D","").trim();
+                            if (group.equals("")) {
+                                group         = rmrefs.replaceAll("[0-9]", "");
+                            }
+                            if ((recBookingRef.equals("")) || (recBookingRef.equals("1"))) {
+                                recBookingRef = rmrefs.replaceAll("[A-Z]", "");
+                            }
+
+                            application.log.finest(" RM group is " + group);
+                            application.log.finest(" RM booking ref is " + recBookingRef);
+
+                        // Added for version 2, to get tlink ref from remark line
+                        } else if (inside_rm && group.equals("")) { // Cannot find NONREFAGT OR RM ##D
+                            application.log.severe("F:" + fileToProcess.getName() + ",PNR:" + recPNR + "/" + " tkt:" + recTicketNo +
+                                " Cannot read tlink ref in either FP line or RM line  " + fileRec.recordText);
+                            return 2;
+
+                        }
+
+                    } // end of else if for FP and RM
+                    fileRec = (AirRecord) recData.nextElement();
                                         
 
 				} // end of while loop , go through records followed after I-
-				  // pax rcord till next I- record found
+				  // pax record till next I- record found
 
 
 				if (showContents) {
-					application.log.finest(" Pax:" + numPaxRecs + " "
-							+ recPassengerName + " t:" + recTicketNo);
+					application.log.finest("pax:" + numPaxRecs + " "
+							+ recPassengerName + " tkt:" + recTicketNo);
 				}
 
 				/*
@@ -2036,7 +2171,7 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 					application.log.severe("F:" + fileToProcess.getName()
 							+ ",PNR:" + recPNR + "/" + recPseudoCityCode
 							+ " tkt:" + recTicketNo + ", exchange tkt:"
-							+ recTicketNo
+							+ recExchangeTicketNo
 							+ " is not numeric (or missing) error");
 					return 2;
 				}
@@ -2049,92 +2184,92 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 					return 2;
 				}
 
-				application.log.fine("Booking Ref no before calling tlink  is " + recBookingRef);
-				application.log.fine("group before calling tlink  is " + group);
-				application.log.fine("pnr" + recPNR);
-				application.log.fine("pnr date" + recPNRdate);
-				application.log.fine("recPseudoCityCode" +  recPseudoCityCode);
-				application.log.fine("specialistPseudoList"+specialistPseudoList);
+				application.log.fine("Booking Ref no before calling tlink is " + recBookingRef);
+				application.log.fine("group before calling tlink is " + group);
+				application.log.fine("pnr " + recPNR);
+				application.log.fine("pnrdate " + recPNRdate);
+				application.log.fine("recPseudoCityCode " + recPseudoCityCode);
+				application.log.fine("specialistPseudoList " + specialistPseudoList);
 
 				if (specialistPseudoList.indexOf(recPseudoCityCode) >=  0)  {
 				// if (recPseudoCityCode.equals("38HJ")) {
 					application.log.fine("inside HJ");
 					if (recBookingRef.equals("") || recBookingRef.equals("0")) {
 
-          //		 V1.1 for H&J populate  booking ref and branch code from Travel Link
-						application.log.fine("calling stored proc to populate bookign ref from travellink view ");
+                        // V1.1 for HandJ populate  booking ref and branch code from Travel Link
+                        application.log.fine("calling stored proc to populate booking ref from travelink view ");
 
-					stage = "calling stored proc to populate bookign ref from travellink view ";
-					CallableStatement cstmt_tl = conn.prepareCall("{?=call p_stella_get_data.sp_populate_travelink_ref(?,?)}");
+                        stage = "calling stored proc to populate booking ref from travelink view ";
+                        CallableStatement cstmt_tl = conn.prepareCall("{?=call p_stella_get_data.sp_populate_travelink_ref(?,?)}");
 
-					application.log.fine("pnr" + recPNR);
-					application.log.fine("pnr date" + recPNRdate);
+                        application.log.fine("pnr " + recPNR);
+                        application.log.fine("pnrdate " + recPNRdate);
 
-					cstmt_tl.registerOutParameter(1,Types.CHAR);
-							//oracle.jdbc.driver.OracleTypes.CURSOR);
-
-
-
-					cstmt_tl.setString(2,recPNR );  // pnr no
-					cstmt_tl.setString(3,recPNRdate  );  // pnr creation date
-
-					cstmt_tl.execute();
-
-					if (cstmt_tl.getString(1) != null) {
-						System.out.println("Output of tLink Execute statement :" +cstmt_tl.getString(1) );
-						application.log.fine("Output of tLink Execute statement :" +cstmt_tl.getString(1) );
-
-						if (cstmt_tl.getString(1).startsWith("Error")) {
-							application.log.severe("F:"
-									+ fileToProcess.getName() + ",P:" + recPNR
-									+ "/" + recPNRdate + ", failed to retrieve Travelink Ref:"
-									+ cstmt_tl.getString(1) + ", fix and retry next run");
-							// return 1 so moved to recycle and will try again
-							// until foriegn key satisfied
-							//return 1;
-						}
-						else if (cstmt_tl.getString(1).equals("0") ) { // can not find ref in Travel Link view
-							application.log.warning("F:"
-									+ fileToProcess.getName() + ",P:" + recPNR
-									+ "/" + recPNRdate + ", failed to retrieve Travelink Ref:   Booking ref. Used : 0  ,  Branch Code used : HAJS ");
-
-						}
-                        else{
-					           bookingRef =   cstmt_tl.getString(1);
-						}
-					}
-
-					/*if (!bookingRef.equals("0") ){ // does not exists in travel link
-					System.out.println("recBookingRef inside if " + bookingRef);
-					group = bookingRef.substring(0,1);
-					recBookingRef = bookingRef.substring(1,bookingRef.length()) ;
-					System.out.println("recBookingRef inside if " + recBookingRef);
-						}*/
+                        cstmt_tl.registerOutParameter(1,Types.CHAR);
+                                //oracle.jdbc.driver.OracleTypes.CURSOR);
 
 
-					if (!bookingRef.equals("0") ){ // does  exists in travel link
 
-					recBookingRef=bookingRef.substring(1,bookingRef.length());
-					group = bookingRef.substring(0,1);
-					application.log.fine("group from travelink  :: " +  group);
-					application.log.fine("recBookingRef from travelink " + recBookingRef);
-					}
-					else {
-						group = "L" ;;  //default is HAJS group
-						application.log.warning("F:" + " Please Correct Branch Code, defaulted to: " +  group);
-					}
-					/*
-					stage = "calling stored proc to retrieve branch code";
-					CallableStatement cstmt1 = conn.prepareCall("{?=call p_stella_get_data.get_specialist_branch(?)}");//group_code
-					cstmt1.registerOutParameter(1,oracle.jdbc.driver.OracleTypes.CURSOR );
-					cstmt1.setString(2, group);  // eg :  A,L,S,M,C
+                        cstmt_tl.setString(2,recPNR );  // pnr no
+                        cstmt_tl.setString(3,recPNRdate  );  // pnr creation date
 
-					cstmt1.execute();
+                        cstmt_tl.execute();
 
-				    rs =  (ResultSet)cstmt1.getObject(1);
-					rs.next();   // There is always one branch code for this group
-					recBranchCode =   rs.getString("branch_code"); // this will have a values in (HAJS,UACS,SOVE,CITA,MEON)
-					*/
+                        if (cstmt_tl.getString(1) != null) {
+                            System.out.println("Output of tLink Execute statement :" +cstmt_tl.getString(1) );
+                            application.log.fine("Output of tLink Execute statement :" +cstmt_tl.getString(1) );
+
+                            if (cstmt_tl.getString(1).startsWith("Error")) {
+                                application.log.severe("F:"
+                                        + fileToProcess.getName() + ",PNR:" + recPNR
+                                        + "/" + recPNRdate + ", failed to retrieve Travelink Ref:"
+                                        + cstmt_tl.getString(1) + ", fix and retry next run");
+                                // return 1 so moved to recycle and will try again
+                                // until foriegn key satisfied
+                                //return 1;
+                            }
+                            else if (cstmt_tl.getString(1).equals("0") ) { // can not find ref in Travel Link view
+                                application.log.warning("F:"
+                                        + fileToProcess.getName() + ",PNR:" + recPNR
+                                        + "/" + recPNRdate + ", failed to retrieve Travelink Ref:   Booking Ref. used : 0  ,  Branch Code used : HAJS ");
+
+                            }
+                            else{
+                                   bookingRef =   cstmt_tl.getString(1);
+                            }
+                        }
+
+                        /*if (!bookingRef.equals("0") ){ // does not exists in travel link
+                        System.out.println("recBookingRef inside if " + bookingRef);
+                        group = bookingRef.substring(0,1);
+                        recBookingRef = bookingRef.substring(1,bookingRef.length()) ;
+                        System.out.println("recBookingRef inside if " + recBookingRef);
+                            }*/
+
+
+                        if (!bookingRef.equals("0") ){ // does  exists in travel link
+
+                        recBookingRef=bookingRef.substring(1,bookingRef.length());
+                        group = bookingRef.substring(0,1);
+                        application.log.fine("group from travelink " +  group);
+                        application.log.fine("recBookingRef from travelink " + recBookingRef);
+                        }
+                        else {
+                            group = "L" ;  //default is HAJS group
+                            application.log.warning("F:" + " Please Correct Branch Code, defaulted to: " +  group);
+                        }
+                        /*
+                        stage = "calling stored proc to retrieve branch code";
+                        CallableStatement cstmt1 = conn.prepareCall("{?=call p_stella_get_data.get_specialist_branch(?)}");//group_code
+                        cstmt1.registerOutParameter(1,oracle.jdbc.driver.OracleTypes.CURSOR );
+                        cstmt1.setString(2, group);  // eg :  A,L,S,M,C
+
+                        cstmt1.execute();
+
+                        rs =  (ResultSet)cstmt1.getObject(1);
+                        rs.next();   // There is always one branch code for this group
+                        recBranchCode =   rs.getString("branch_code"); // this will have a values in (HAJS,UACS,SOVE,CITA,MEON)
+                        */
 					}
 
 				}else { // for firstchoice airs leave it blank
@@ -2274,7 +2409,8 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 
 					finalDeptDate = null;
 					recPassengerName = "VOID";
-					recBookingRef = "";
+                    // v1.10 Leave recBookingRef assigned
+                    // recBookingRef = "";
 					recSeason = "";
 					recBranchCode = "";
 					recTicketAgent = voidTicketInitials; //  This id default
@@ -2298,14 +2434,14 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 				}
 
 				// usually only have to insert one ticket, BUT sometimes, it may
-				// be a conjunction AIR
+				// be a conjunctive AIR
 				// this means you have to insert the main ticket with all values
 				// gotten so far
 				// but then also insert some dummy tickets with zero amounts but
 				// on same pnr
 				// This is done because sometimes there are too many sectors to
 				// fit onto one ticket stub,
-				// Conjuctive ticket number are the one followed by - , first 8
+				// Conjunctive ticket number are the one followed by - , first 8
 				// digit will be same as main tkt only last two digits gets
 				// changed
 
@@ -2323,13 +2459,13 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 
 					// i =1 does insert for main ticket
 
-					// loop through each conjunction ticket required and insert
+					// loop through each conjunctive ticket required and insert
 					// a row for each one
 					// ensure there is always at one least one ticket inserted
 					// (the main one)
 
 					if (i > 1) {
-						// we are now processing the conjunction "dummy" tickets
+						// we are now processing the conjunctive "dummy" tickets
 						// so reset amounts to 0
 						application.log.finest("conjloop:" + i);
 						insPublishedFare = "0";
@@ -2345,7 +2481,7 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 						insTktNum = Long
 								.toString(Long.parseLong(insTktNum) + 1);
 
-						System.out.println("	insTktNum in Conjuction tkt");
+						System.out.println("	insTktNum in Conjunctive tkt");
 						System.out.println("	tktRecord" + tktRecord);
 						System.out.println("	conj tkt no" + insTktNum);
 
@@ -2358,19 +2494,19 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 
 					}
 
-					application.log.fine("recTicketDate" + recTicketDate);
+					application.log.fine("recTicketDate " + recTicketDate);
 					if (showContents) {
 						application.log.finest("ins rec, pnr:"
 								+ recPNR
 								+ " dep:"
 								+ finalDeptDate
-								+ "origtkt:"
+								+ " origtkt:"
 								+ recTicketNo
 								+ // the original/main ticket number
 								" tkt:"
 								+ insTktNum
 								+ // the actual ticket number (may be different
-								  // in case of conjunction
+								  // in case of conjunctive)
 								" air:"
 								+ recAirline
 								+ " br:"
@@ -2404,7 +2540,7 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 								// "0000","yymmddhhmm") +
 								//" numpax:" + String.valueOf(numPaxRecs) +
 								" numpax:" + "1" + " gbtax:" + insGBTax
-								+ " Remtax:" + insRemainTax + " ubtax:"
+								+ " remtax:" + insRemainTax + " ubtax:"
 								+ insUBTax + " ccy:" + recCcyCode + //ccy code
 								" city:" + recPseudoCityCode + " paxtype:"
 								+ recPassengerType + " pax:"
@@ -2430,22 +2566,22 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 																		   // because
 																		   // it
 																		   // is a
-																		   // conjunction
+																		   // conjunctive
 																		   // tkt
-								"TicketType" + recTicketType + "OtherTaxes"
-								+ insOtherTaxes + "" + "tkt type" +  recTicketType + "grp:"+ group);
+								" tickettype:" + recTicketType + " othertaxes:"
+								+ insOtherTaxes + " grp:" + group);
 					}
 
 					// finally call the stored procedure to do the insert into
 					// database
-					stage = "calling stored proc";
+					stage = "calling stored proc p_stella_get_data.insert_ticket() ";
 
 					CallableStatement cstmt = conn
 							.prepareCall("{?=call p_stella_get_data.insert_ticket(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 					cstmt.registerOutParameter(1, Types.CHAR);
 					cstmt.setString(2, "AL");
 					cstmt.setString(3, recPNR.trim()); //pnr
-					if (voidTkt ||(finalDeptDate == null)) {   // if H- record missing and finalDeptDate is null it is currently failing
+					if (voidTkt || (finalDeptDate == null)) {   // if H- record missing and finalDeptDate is null it is currently failing
                                                          // with NullPointerException, at line 2444 and therefore added (finalDeptDate == null) , 28/04/2010
 						// cstmt.setDate(4, null); //finalDeptDate); is null
 						cstmt.setNull(4, java.sql.Types.DATE);
@@ -2486,13 +2622,13 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 					cstmt.setString(23, insUBTax.trim());
 
 					if (recTicketNo.equals(insTktNum)) {
-						// if it's the main ticket as opposed to a conjunction
+						// if it's the main ticket as opposed to a conjunctive
 						// one, insert null
 						cstmt.setNull(24, java.sql.Types.VARCHAR); // linked
-																   // conjunction
+																   // conjunctive
 																   // ticket
 					} else {
-						cstmt.setString(24, recTicketNo); // linked conjunction
+						cstmt.setString(24, recTicketNo); // linked conjunctive
 														  // ticket
 					}
 
@@ -2539,8 +2675,8 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 
 						if (cstmt.getString(1).startsWith("Error, (fk)")) {
 							application.log.warning("F:"
-									+ fileToProcess.getName() + ",P:" + recPNR
-									+ "/" + recPseudoCityCode + " T:"
+									+ fileToProcess.getName() + ",PNR:" + recPNR
+									+ "/" + recPseudoCityCode + " tkt:"
 									+ recTicketNo + ", failed:"
 									+ cstmt.getString(1) + ", retry next run");
 							// return 1 so moved to recycle and will try again
@@ -2561,7 +2697,7 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 					} else {
 						numRowsInserted++;
 						if (i == 1) {
-							// the original ticket insert, not any conjunction
+							// the original ticket insert, not any conjunctive
 							// ones
 							insertedTickets++;
 						}
@@ -2575,7 +2711,7 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 			//}
 
 
-			stage = "finished with file";
+			stage = "finished processing file";
 			if (insertedTickets != numPaxRecs) {
 				application.log.severe("F:" + fileToProcess.getName() + ",PNR:"
 						+ recPNR + "/" + recPseudoCityCode + " num pax ("
@@ -2612,14 +2748,12 @@ application.log.finest( "first 6 char : " + fileRec.recordText.substring(0,6));
 	 * Process fare record , this is modularise to avoid repeating equivalent
 	 * currency logic
 	 *
-	 * @param recordIdToProcess
+	 * @param recIdToProcess
 	 *            record id will be K-F, KN-F, K-I, or KN-I
 	 * @param oneLine
 	 *            this is a record line
 	 * @param showContents
 	 *            true if debug on, false if not on
-	 * @throws SQLException
-	 *             sql error has occurred
 	 * @return fareAmt , this will be either Published Fare or Selling Fare
 	 *         depending on record Id
 	 */
