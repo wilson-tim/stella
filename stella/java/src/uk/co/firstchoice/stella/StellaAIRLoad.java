@@ -125,7 +125,7 @@ public class StellaAIRLoad {
 
 	private static final String programShortName = "STELAIRL";
 
-	private static final String programVersion = "1.00";
+	private static final String programVersion = "1.10.2";
 
 	private static int numRowsInserted = 0;
 
@@ -2796,3 +2796,5 @@ public class StellaAIRLoad {
 	} // end of populateFare function
 
 }
+
+
