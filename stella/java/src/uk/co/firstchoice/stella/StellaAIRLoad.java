@@ -13,10 +13,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Vector;
@@ -730,17 +728,17 @@ public class StellaAIRLoad {
         FileReader theFile, theFile2, theFile3;
         BufferedReader fileIn = null, fileIn2 = null, fileIn3 = null;
         String oneLine, lineData = "";
-        Vector fileRecs = new Vector();
+        Vector<AirRecord> fileRecs = new Vector<AirRecord>();
         AirRecord fileRec = new AirRecord();
-        AirRecord fileRec2 = new AirRecord();
         //int paxNo = 0, fareBasisNo = 0;
         int numPaxRecs = 0;
 //        int recCounter = 0;
         String recID = "";
 
-        Vector EMDRecs = new Vector();  // All EMD record(s) in a file
-        Vector EMDTkts = new Vector();  // EMD record(s) for the passenger currently being processed (current I- record)
+        Vector<EMDRecord> EMDRecs = new Vector<EMDRecord>();  // All EMD record(s) in a file
+        Vector<EMDRecord> EMDTkts = new Vector<EMDRecord>();  // EMD record(s) for the passenger currently being processed (current I- record)
         EMDRecord EMDCurrentRec = new EMDRecord();
+
         String CheckBookingRef = "";
         boolean BookingRefInconsistent = false;
 
@@ -2105,6 +2103,7 @@ public class StellaAIRLoad {
                             recExchangeTicketNo = recExchangeTicketNos;
                             maxConjExchTktNum = recExchangeTicketNo;
                         } // If no conjunctive ticket it will be defaulted to
+                          // ticket number
 
                         application.log.fine("maxConjExchTktNum " + maxConjExchTktNum);
 
@@ -2614,11 +2613,11 @@ public class StellaAIRLoad {
                     } else {
                         if (commAmt.compareTo(new BigDecimal("0")) == 0 && commPct.compareTo(new BigDecimal("0")) != 0) {
                             // calc amt from pct * published fare
-                            commAmt = (publishedFareAmt.multiply(commPct)).divide(new BigDecimal("100"), RoundingMode.HALF_UP);
+                            commAmt = (publishedFareAmt.multiply(commPct)).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
                             recCommAmt = String.valueOf(commAmt);
                         } else if (commAmt.compareTo(new BigDecimal("0")) != 0 && commPct.compareTo(new BigDecimal("0")) == 0) {
                             // calc pct from amt / published fare
-                            commPct = (commAmt.divide(publishedFareAmt, RoundingMode.HALF_UP)).multiply(new BigDecimal("100"));
+                            commPct = (commAmt.divide(publishedFareAmt, 2, RoundingMode.HALF_UP)).multiply(new BigDecimal("100"));
                             recCommPct = String.valueOf(commPct);
 
                         }
@@ -2674,7 +2673,7 @@ public class StellaAIRLoad {
                 // digit will be same as main tkt only last two digits gets
                 // changed
 
-                stage = "processing tickets";
+                stage = "inserting tickets";
                 String insTktNum = "";
                 String conjTktInd = "N";
 
@@ -2942,9 +2941,32 @@ public class StellaAIRLoad {
 
                     // there is no commit in the stored procedure
                     if (cstmt.getString(1) != null) {
-                        application.log.finest("SQL result: " + cstmt.getString(1));
+                        System.out.println("Output of SQL execute statement :" +cstmt.getString(1) );
+                        application.log.fine("Output of SQL execute statement :" +cstmt.getString(1) );
+
+                        if (cstmt.getString(1).startsWith("Error, (fk)")) {
+                            application.log.warning("F:"
+                                            + fileToProcess.getName() + ",PNR:" + recPNR
+                                            + "/" + recPseudoCityCode + " tkt:"
+                                            + recTicketNo + ", failed:"
+                                            + cstmt.getString(1) + ", retry next run");
+                            // return 1 so moved to recycle and will try again
+                            // until foreign key satisfied
+                            return 1;
+                        } else if (cstmt.getString(1).startsWith("Error")) {
+                            // severe error in the stored procedure
+                            application.log.severe("F:"
+                                            + fileToProcess.getName() + ",PNR:"
+                                            + recPNR + "/" + recPseudoCityCode
+                                            + " tkt:" + recTicketNo + ", failed:"
+                                            + cstmt.getString(1)
+                                            + ", moved to error area");
+                            // return 2 so moved to error and will not try again
+                            // next run
+                            return 2;
+                        }
                     } else {
-                        numRowsInserted++;
+                            numRowsInserted++;
                         if (i == 1) {
                             // the original ticket insert, not any conjunctive
                             // ones
@@ -2964,14 +2986,6 @@ public class StellaAIRLoad {
 
             stage = "finished processing file";
             
-            if (insertedTickets != numPaxRecs) {
-                application.log.severe("F:" + fileToProcess.getName() + ",PNR:" +
-                    recPNR + "/" + recPseudoCityCode + " num pax (" +
-                    numPaxRecs + ") <> num inserts (" + insertedTickets +
-                    "), error");
-                return 2;
-            }
-            
             if ((EMDfound) && (EMDTkts.size() > 0)) {
                 if (insertedEMDTickets != EMDRecs.size()) {
                     application.log.severe("F:" + fileToProcess.getName() + ",PNR:" +
@@ -2985,6 +2999,14 @@ public class StellaAIRLoad {
                         recPNR + "/" + recPseudoCityCode + " booking references in file are inconsistent, please check");
                     return 2;
                 }
+            }
+            
+            if (insertedTickets != numPaxRecs) {
+                application.log.severe("F:" + fileToProcess.getName() + ",PNR:" +
+                    recPNR + "/" + recPseudoCityCode + " num pax (" +
+                    numPaxRecs + ") <> num inserts (" + insertedTickets +
+                    "), error");
+                return 2;
             }
             
             // no errors , processing OK, return OK return code
@@ -3006,10 +3028,6 @@ public class StellaAIRLoad {
         }
 
     }
-
-    //}
-
-    //}
 
     /**
      * Process fare record , this is modularise to avoid repeating equivalent
