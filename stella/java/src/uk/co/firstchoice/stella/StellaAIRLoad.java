@@ -101,6 +101,11 @@ import uk.co.firstchoice.util.businessrules.NumberProcessor;
  * Processing for EMD (Electronic Miscellaneous Document) ticket records
  * 01 Use regex to match group and booking reference
  *
+ * @version 2.1
+ * @author Tim Wilson
+ * 10/09/2018
+ * Bug fix for TMCD record processing
+ *
  */
 
 
@@ -131,7 +136,7 @@ public class StellaAIRLoad {
 
     private static final String programShortName = "STELAIRL";
 
-    private static final String programVersion = "1.10.2";
+    private static final String programVersion = "2.1.0";
 
     private static int numRowsInserted = 0;
 
@@ -2195,7 +2200,7 @@ public class StellaAIRLoad {
                             // Added for version 2, to get tlink ref from remark line
                         } else if (inside_rm && group.equals("")) { // Cannot find NONREFAGT OR RM ##D
                             application.log.severe("F:" + fileToProcess.getName() + ",PNR:" + recPNR + "/" + " tkt:" + recTicketNo +
-                                " Cannot read Travelink Ref in either FP line or RM line  " + fileRec.recordText);
+                                " Cannot read Travelink Ref in either FP line or RM line " + fileRec.recordText);
                             return 2;
                         }
 
@@ -2209,44 +2214,59 @@ public class StellaAIRLoad {
                         tktRecord = fileRec.recordText.substring(4);
 
                         // Extract airline code and ticket number
-                        endPos = StringUtils.searchStringOccur(
-                            tktRecord, ";", 1);
                         dashPos = StringUtils.searchStringOccur(
                             tktRecord, "-", 1);
-                        String tmpAirline = tktRecord.substring(0, dashPos);
-                        String tmpTicketNo = tktRecord.substring(dashPos + 1, endPos);
-                        
-                        // Update associated EMD record in EMDTkts
-                        // first get the document id
-                        startPos = StringUtils.searchStringOccur(
-                            tktRecord, ";", 2);
-                        EMDDocID = tktRecord.substring(startPos + 1);
-                        
-                        // then look for that document id in the EMDRecs vector
-                        idxEMDRecs = 0;
-                        idxEMDFound = false;
-                        for (Enumeration EMDData = EMDRecs.elements(); EMDData
-                            .hasMoreElements();) {
+                        endPos = StringUtils.searchStringOccur(
+                            tktRecord, ";", 1);
+                        if (endPos < 0) {
+                            endPos = tktRecord.length();
+                        }
+                        if ((dashPos > 0) && (endPos > dashPos + 1)) {
+                            String tmpAirline  = tktRecord.substring(0, dashPos);
+                            String tmpTicketNo = tktRecord.substring(dashPos + 1, endPos);
 
-                            EMDCurrentRec = (EMDRecord) EMDData.nextElement();
-                            if (EMDCurrentRec.docID.equals(EMDDocID)) {
-                                idxEMDFound = true;
-                                application.log.finest("EMD and ticket docID is " + EMDDocID);
-                                application.log.finest("Ticket airline is " + tmpAirline);
-                                application.log.finest("Ticket number is " + tmpTicketNo);
-                                EMDCurrentRec.airline = tmpAirline;
-                                EMDCurrentRec.ticketNo = tmpTicketNo;
-                                break;
+                            // Update associated EMD record in EMDTkts
+                            // first get the document id
+                            startPos = StringUtils.searchStringOccur(
+                                tktRecord, ";", 2);
+                            if (startPos > 0) {
+                                EMDDocID = tktRecord.substring(startPos + 1);
+
+                                // then look for that document id in the EMDRecs vector
+                                idxEMDRecs = 0;
+                                idxEMDFound = false;
+                                for (Enumeration EMDData = EMDRecs.elements(); EMDData
+                                    .hasMoreElements();) {
+
+                                    EMDCurrentRec = (EMDRecord) EMDData.nextElement();
+                                    if (EMDCurrentRec.docID.equals(EMDDocID)) {
+                                        idxEMDFound = true;
+                                        application.log.finest("EMD and ticket docID is " + EMDDocID);
+                                        application.log.finest("Ticket airline is " + tmpAirline);
+                                        application.log.finest("Ticket number is " + tmpTicketNo);
+                                        EMDCurrentRec.airline = tmpAirline;
+                                        EMDCurrentRec.ticketNo = tmpTicketNo;
+                                        break;
+                                    }
+                                    idxEMDRecs ++;
+                                }
+                                // finally if found then update the appropriate record in the EMDRecs vector
+                                // and add the record to the EMDTkts vector
+                                if (idxEMDFound) {
+                                    EMDRecs.set(idxEMDRecs, EMDCurrentRec);
+                                    EMDTkts.addElement(EMDCurrentRec);
+                                    application.log.fine("EMD record updated " + EMDCurrentRec.docID + " " + EMDCurrentRec.sellingFareAmount + " " + EMDCurrentRec.remainingTax + " " + EMDCurrentRec.airline + " " + EMDCurrentRec.ticketNo );
+                                }
+                            } else {
+                                application.log.severe("F:" + fileToProcess.getName() + ",PNR:" + recPNR + "/" + " tkt:" + recTicketNo + " tmpAirline: " + tmpAirline + " tmpTicketNo: " + tmpTicketNo +
+                                    " Cannot find EMD doc ID in TMCD line " + fileRec.recordText);
+                                return 2;
                             }
-                            idxEMDRecs ++;
+                        } else {
+                            application.log.severe("F:" + fileToProcess.getName() + ",PNR:" + recPNR + "/" + " tkt:" + recTicketNo +
+                                " Cannot read TMCD line " + fileRec.recordText);
+                            return 2;
                         }
-                        // finally if found then update the appropriate record in the EMDRecs vector
-                        // and add the record to the EMDTkts vector
-                        if (idxEMDFound) {
-                            EMDRecs.set(idxEMDRecs, EMDCurrentRec);
-                            EMDTkts.addElement(EMDCurrentRec);
-                        }
-                        application.log.fine("EMD record updated " + EMDCurrentRec.docID + " " + EMDCurrentRec.sellingFareAmount + " " + EMDCurrentRec.remainingTax + " " + EMDCurrentRec.airline + " " + EMDCurrentRec.ticketNo );
                     }
 
                     else if ((fileRec.recordID.equals("MF")) && fileRec.recordText.startsWith("MFPNONREFAGT")) {
