@@ -105,6 +105,7 @@ import uk.co.firstchoice.util.businessrules.NumberProcessor;
  * @author Tim Wilson
  * 10/09/2018
  * Bug fix for TMCD record processing
+ * 01 Processing for RFD (refund) record
  *
  */
 
@@ -136,7 +137,7 @@ public class StellaAIRLoad {
 
     private static final String programShortName = "STELAIRL";
 
-    private static final String programVersion = "2.1.0";
+    private static final String programVersion = "2.1.1";
 
     private static int numRowsInserted = 0;
 
@@ -855,6 +856,7 @@ public class StellaAIRLoad {
             String collectionAmt = "0";
             String group = ""; // default to HandJ branch group , try again in stored procedure to find a group
             boolean inside_rm = false;
+            boolean RFDfound = false;
 
             ResultSet rs;
 
@@ -951,6 +953,12 @@ public class StellaAIRLoad {
                          * recSellingFare = collectionAmt ; }
                          */
                     } // end of FPO record
+
+                    // Check if this is a refund previously loaded from an EMD
+                    if ((lineData.length() > 3) &&
+                        (oneLine.substring(0, 3).equalsIgnoreCase("RFD"))) {
+                        RFDfound = true;
+                    }
 
                 } // end of while
 
@@ -2258,9 +2266,15 @@ public class StellaAIRLoad {
                                     application.log.fine("EMD record updated " + EMDCurrentRec.docID + " " + EMDCurrentRec.sellingFareAmount + " " + EMDCurrentRec.remainingTax + " " + EMDCurrentRec.airline + " " + EMDCurrentRec.ticketNo );
                                 }
                             } else {
-                                application.log.severe("F:" + fileToProcess.getName() + ",PNR:" + recPNR + "/" + " tkt:" + recTicketNo + " tmpAirline: " + tmpAirline + " tmpTicketNo: " + tmpTicketNo +
-                                    " Cannot find EMD doc ID in TMCD line " + fileRec.recordText);
-                                return 2;
+                                if (RFDfound) {
+                                    application.log.severe("F:" + fileToProcess.getName() + ",PNR:" + recPNR + "/" + " tkt:" + recTicketNo + " tmpAirline: " + tmpAirline + " tmpTicketNo: " + tmpTicketNo +
+                                        " RFD (Refund) record found, please check the details and input manually " + fileRec.recordText);
+                                    return 2;
+                                } else {
+                                    application.log.severe("F:" + fileToProcess.getName() + ",PNR:" + recPNR + "/" + " tkt:" + recTicketNo + " tmpAirline: " + tmpAirline + " tmpTicketNo: " + tmpTicketNo +
+                                        " Cannot find EMD doc ID in TMCD line " + fileRec.recordText);
+                                    return 2;
+                                }
                             }
                         } else {
                             application.log.severe("F:" + fileToProcess.getName() + ",PNR:" + recPNR + "/" + " tkt:" + recTicketNo +
@@ -2352,6 +2366,7 @@ public class StellaAIRLoad {
                             }
                         }
                     }
+
                     fileRec = (AirRecord) recData.nextElement();
 
                 } // end of while loop , going through records followed after I-
