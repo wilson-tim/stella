@@ -1,0 +1,3 @@
+SEVERE :F:spec0440456.AIR,PNR:WRYJ49/3101 tkt:5117517288, failed:Error, Group Code is Blank in Air File, moved to error area SEVERE :F:spec0440492.AIR,PNR:7IKFBS/38HJ tkt:5117560482, bkg:1125560;P7-8 is not numeric error SEVERE :F:spec0440497.AIR,PNR:7IKFBS/38HJ tkt:5117560490, bkg:1121931;P3-4 is not numeric error SEVERE :F:spec0440501.AIR,PNR:7IKFBS/38HJ tkt:5117560492, bkg:1122089;P5-6 is not numeric error SEVERE :F:spec0440502.AIR,PNR:7IKFBS/38HJ tkt:5117560494, bkg:1109342;P1-2 is not numeric error SEVERE :F:spec0440505.AIR,PNR:KPFO8C/38HJ tkt:5117560496, failed:Error, Group Code is Blank in Air File, moved to error area SEVERE :F:spec0440531.AIR,PNR:UR2H8Z tkt:, tax1:EXEMPT is not numeric error
+
+Logfile:/data/logs/stella//stelairl_090118_0730.log

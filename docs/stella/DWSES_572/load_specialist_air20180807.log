@@ -1,0 +1,622 @@
+####################################################
+lager65
+2018/08/07---07:30:02 : Parameters passed: .\n
+2018/08/07---07:30:02 --------------------------------------------------------------------------
+2018/08/07---07:30:02 >>>>>> Stella Specialist AIR Load load__specialist_air.ksh
+2018/08/07---07:30:02 --------------------------------------------------------------------------
+2018/08/07---07:30:02 Setting variables
+PATH set to: /oracle/product/10.2.0/db_1/jdk/jre/bin:/oracle/product/10.2.0/db_1/jdk/bin:/usr/local/bin:/usr/bin:/etc:/usr/sbin:/usr/ucb:/home/dw/bin:/usr/bin/X11:/sbin:/bin:.:/oracle/product/10.2.0/db_1/bin
+CLASSPATH set to: /oracle/product/10.2.0/db_1/jdk/jre/lib:/oracle/product/10.2.0/db_1/jlib:/oracle/product/10.2.0/db_1/lib/xsu12.jar:/oracle/product/10.2.0/db_1/lib/xmlparserv2.jar:/oracle/product/10.2.0/db_1/lib/xmlcomp.jar:/oracle/product/10.2.0/db_1/jdbc/lib/classes12.jar:/oracle/product/10.2.0/db_1/jdbc/lib/nls_charset12.jar:/oracle/product/10.2.0/db_1/lib/oraclexsql.jar:/oracle/product/10.2.0/db_1/lib/xsqlserializers.jar:/oracle/product/10.2.0/db_1/rdbms/jlib/xdb.jar
+2018/08/07---07:30:02 Checking input params
+start at step  00
+2018/08/07---07:30:02 FTPing files from source server
+2018/08/07---07:30:02 Step 10\n
+not written yet
+2018/08/07---07:30:02 Copying files to airfiles folder from spec_airfiles
+2018/08/07---07:30:02 Step 20\n
+Moving files from  /data/stella/spec_airfiles to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+ moving files to /data/stella/airfiles
+2018/08/07---07:30:03 finished moving files, now trying to change ownership/rights on files
+chmod: changing permissions of `/data/stella/airfiles/0134164.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/0134165.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/0134166.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/0134167.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/0134168.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/0134169.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/0134170.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/0134171.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/0134172.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/0134173.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464152.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464153.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464154.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464155.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464156.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464157.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464158.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464159.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464160.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464161.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464162.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464163.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464164.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464165.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464166.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464167.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464168.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464169.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464170.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464171.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464172.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464173.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464174.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464175.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464176.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464177.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464178.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464179.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464180.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464181.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464182.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464183.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464184.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464185.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464186.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464187.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464188.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464189.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464190.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464191.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464192.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464193.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464194.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464195.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464196.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464197.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464198.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464199.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464200.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464201.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464202.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464203.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464204.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464205.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464206.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464207.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464208.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464209.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464210.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464211.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464212.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464213.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464214.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464215.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464216.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464217.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464218.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464219.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464220.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464221.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464222.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464223.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464224.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464225.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464226.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464227.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464228.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464229.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464230.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464231.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464232.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464233.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464234.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464235.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464236.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464237.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464238.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464239.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464240.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464241.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464242.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464243.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464244.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464245.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464246.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464247.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464248.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464249.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464250.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464251.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464252.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464253.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464254.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464255.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464256.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464257.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464258.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464259.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464260.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464261.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464262.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464263.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464264.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464265.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464266.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464267.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464268.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464269.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464270.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464271.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464272.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464273.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464274.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464275.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464276.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464277.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464278.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464279.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464280.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464281.AIR': Operation not permitted
+chmod: changing permissions of `/data/stella/airfiles/spec0464282.AIR': Operation not permitted
+2018/08/07---07:30:03 Step 30\n
+2018/08/07---07:30:03 Moving recycle files (/data/stella/airrecycle) into current data directory (/data/stella/airfiles) so they can be processed again
+ls: spec*.AIR: No such file or directory
+cp: omitting directory `/data/stella/airrecycle/'
+2018/08/07---07:30:03 Step 35\n
+2018/08/07---07:30:03 Checking for dup files
+ls: /data/stella/backup/spec0464152.AIR: No such file or directory
+ls: /data/stella/backup/spec0464153.AIR: No such file or directory
+ls: /data/stella/backup/spec0464154.AIR: No such file or directory
+ls: /data/stella/backup/spec0464155.AIR: No such file or directory
+ls: /data/stella/backup/spec0464156.AIR: No such file or directory
+ls: /data/stella/backup/spec0464157.AIR: No such file or directory
+ls: /data/stella/backup/spec0464158.AIR: No such file or directory
+ls: /data/stella/backup/spec0464159.AIR: No such file or directory
+ls: /data/stella/backup/spec0464160.AIR: No such file or directory
+ls: /data/stella/backup/spec0464161.AIR: No such file or directory
+ls: /data/stella/backup/spec0464162.AIR: No such file or directory
+ls: /data/stella/backup/spec0464163.AIR: No such file or directory
+ls: /data/stella/backup/spec0464164.AIR: No such file or directory
+ls: /data/stella/backup/spec0464165.AIR: No such file or directory
+ls: /data/stella/backup/spec0464166.AIR: No such file or directory
+ls: /data/stella/backup/spec0464167.AIR: No such file or directory
+ls: /data/stella/backup/spec0464168.AIR: No such file or directory
+ls: /data/stella/backup/spec0464169.AIR: No such file or directory
+ls: /data/stella/backup/spec0464170.AIR: No such file or directory
+ls: /data/stella/backup/spec0464171.AIR: No such file or directory
+ls: /data/stella/backup/spec0464172.AIR: No such file or directory
+ls: /data/stella/backup/spec0464173.AIR: No such file or directory
+ls: /data/stella/backup/spec0464174.AIR: No such file or directory
+ls: /data/stella/backup/spec0464175.AIR: No such file or directory
+ls: /data/stella/backup/spec0464176.AIR: No such file or directory
+ls: /data/stella/backup/spec0464177.AIR: No such file or directory
+ls: /data/stella/backup/spec0464178.AIR: No such file or directory
+ls: /data/stella/backup/spec0464179.AIR: No such file or directory
+ls: /data/stella/backup/spec0464180.AIR: No such file or directory
+ls: /data/stella/backup/spec0464181.AIR: No such file or directory
+ls: /data/stella/backup/spec0464182.AIR: No such file or directory
+ls: /data/stella/backup/spec0464183.AIR: No such file or directory
+ls: /data/stella/backup/spec0464184.AIR: No such file or directory
+ls: /data/stella/backup/spec0464185.AIR: No such file or directory
+ls: /data/stella/backup/spec0464186.AIR: No such file or directory
+ls: /data/stella/backup/spec0464187.AIR: No such file or directory
+ls: /data/stella/backup/spec0464188.AIR: No such file or directory
+ls: /data/stella/backup/spec0464189.AIR: No such file or directory
+ls: /data/stella/backup/spec0464190.AIR: No such file or directory
+ls: /data/stella/backup/spec0464191.AIR: No such file or directory
+ls: /data/stella/backup/spec0464192.AIR: No such file or directory
+ls: /data/stella/backup/spec0464193.AIR: No such file or directory
+ls: /data/stella/backup/spec0464194.AIR: No such file or directory
+ls: /data/stella/backup/spec0464195.AIR: No such file or directory
+ls: /data/stella/backup/spec0464196.AIR: No such file or directory
+ls: /data/stella/backup/spec0464197.AIR: No such file or directory
+ls: /data/stella/backup/spec0464198.AIR: No such file or directory
+ls: /data/stella/backup/spec0464199.AIR: No such file or directory
+ls: /data/stella/backup/spec0464200.AIR: No such file or directory
+ls: /data/stella/backup/spec0464201.AIR: No such file or directory
+ls: /data/stella/backup/spec0464202.AIR: No such file or directory
+ls: /data/stella/backup/spec0464203.AIR: No such file or directory
+ls: /data/stella/backup/spec0464204.AIR: No such file or directory
+ls: /data/stella/backup/spec0464205.AIR: No such file or directory
+ls: /data/stella/backup/spec0464206.AIR: No such file or directory
+ls: /data/stella/backup/spec0464207.AIR: No such file or directory
+ls: /data/stella/backup/spec0464208.AIR: No such file or directory
+ls: /data/stella/backup/spec0464209.AIR: No such file or directory
+ls: /data/stella/backup/spec0464210.AIR: No such file or directory
+ls: /data/stella/backup/spec0464211.AIR: No such file or directory
+ls: /data/stella/backup/spec0464212.AIR: No such file or directory
+ls: /data/stella/backup/spec0464213.AIR: No such file or directory
+ls: /data/stella/backup/spec0464214.AIR: No such file or directory
+ls: /data/stella/backup/spec0464215.AIR: No such file or directory
+ls: /data/stella/backup/spec0464216.AIR: No such file or directory
+ls: /data/stella/backup/spec0464217.AIR: No such file or directory
+ls: /data/stella/backup/spec0464218.AIR: No such file or directory
+ls: /data/stella/backup/spec0464219.AIR: No such file or directory
+ls: /data/stella/backup/spec0464220.AIR: No such file or directory
+ls: /data/stella/backup/spec0464221.AIR: No such file or directory
+ls: /data/stella/backup/spec0464222.AIR: No such file or directory
+ls: /data/stella/backup/spec0464223.AIR: No such file or directory
+ls: /data/stella/backup/spec0464224.AIR: No such file or directory
+ls: /data/stella/backup/spec0464225.AIR: No such file or directory
+ls: /data/stella/backup/spec0464226.AIR: No such file or directory
+ls: /data/stella/backup/spec0464227.AIR: No such file or directory
+ls: /data/stella/backup/spec0464228.AIR: No such file or directory
+ls: /data/stella/backup/spec0464229.AIR: No such file or directory
+ls: /data/stella/backup/spec0464230.AIR: No such file or directory
+ls: /data/stella/backup/spec0464231.AIR: No such file or directory
+ls: /data/stella/backup/spec0464232.AIR: No such file or directory
+ls: /data/stella/backup/spec0464233.AIR: No such file or directory
+ls: /data/stella/backup/spec0464234.AIR: No such file or directory
+ls: /data/stella/backup/spec0464235.AIR: No such file or directory
+ls: /data/stella/backup/spec0464236.AIR: No such file or directory
+ls: /data/stella/backup/spec0464237.AIR: No such file or directory
+ls: /data/stella/backup/spec0464238.AIR: No such file or directory
+ls: /data/stella/backup/spec0464239.AIR: No such file or directory
+ls: /data/stella/backup/spec0464240.AIR: No such file or directory
+ls: /data/stella/backup/spec0464241.AIR: No such file or directory
+ls: /data/stella/backup/spec0464242.AIR: No such file or directory
+ls: /data/stella/backup/spec0464243.AIR: No such file or directory
+ls: /data/stella/backup/spec0464244.AIR: No such file or directory
+ls: /data/stella/backup/spec0464245.AIR: No such file or directory
+ls: /data/stella/backup/spec0464246.AIR: No such file or directory
+ls: /data/stella/backup/spec0464247.AIR: No such file or directory
+ls: /data/stella/backup/spec0464248.AIR: No such file or directory
+ls: /data/stella/backup/spec0464249.AIR: No such file or directory
+ls: /data/stella/backup/spec0464250.AIR: No such file or directory
+ls: /data/stella/backup/spec0464251.AIR: No such file or directory
+ls: /data/stella/backup/spec0464252.AIR: No such file or directory
+ls: /data/stella/backup/spec0464253.AIR: No such file or directory
+ls: /data/stella/backup/spec0464254.AIR: No such file or directory
+ls: /data/stella/backup/spec0464255.AIR: No such file or directory
+ls: /data/stella/backup/spec0464256.AIR: No such file or directory
+ls: /data/stella/backup/spec0464257.AIR: No such file or directory
+ls: /data/stella/backup/spec0464258.AIR: No such file or directory
+ls: /data/stella/backup/spec0464259.AIR: No such file or directory
+ls: /data/stella/backup/spec0464260.AIR: No such file or directory
+ls: /data/stella/backup/spec0464261.AIR: No such file or directory
+ls: /data/stella/backup/spec0464262.AIR: No such file or directory
+ls: /data/stella/backup/spec0464263.AIR: No such file or directory
+ls: /data/stella/backup/spec0464264.AIR: No such file or directory
+ls: /data/stella/backup/spec0464265.AIR: No such file or directory
+ls: /data/stella/backup/spec0464266.AIR: No such file or directory
+ls: /data/stella/backup/spec0464267.AIR: No such file or directory
+ls: /data/stella/backup/spec0464268.AIR: No such file or directory
+ls: /data/stella/backup/spec0464269.AIR: No such file or directory
+ls: /data/stella/backup/spec0464270.AIR: No such file or directory
+ls: /data/stella/backup/spec0464271.AIR: No such file or directory
+ls: /data/stella/backup/spec0464272.AIR: No such file or directory
+ls: /data/stella/backup/spec0464273.AIR: No such file or directory
+ls: /data/stella/backup/spec0464274.AIR: No such file or directory
+ls: /data/stella/backup/spec0464275.AIR: No such file or directory
+ls: /data/stella/backup/spec0464276.AIR: No such file or directory
+ls: /data/stella/backup/spec0464277.AIR: No such file or directory
+ls: /data/stella/backup/spec0464278.AIR: No such file or directory
+ls: /data/stella/backup/spec0464279.AIR: No such file or directory
+ls: /data/stella/backup/spec0464280.AIR: No such file or directory
+ls: /data/stella/backup/spec0464281.AIR: No such file or directory
+ls: /data/stella/backup/spec0464282.AIR: No such file or directory
+2018/08/07---07:30:03 No files already exist - continuing with process
+2018/08/07---07:30:03 Step 40\n
+2018/08/07---07:30:03 List of contents of data file directory before actual processing starts
+spec0464152.AIR
+spec0464153.AIR
+spec0464154.AIR
+spec0464155.AIR
+spec0464156.AIR
+spec0464157.AIR
+spec0464158.AIR
+spec0464159.AIR
+spec0464160.AIR
+spec0464161.AIR
+spec0464162.AIR
+spec0464163.AIR
+spec0464164.AIR
+spec0464165.AIR
+spec0464166.AIR
+spec0464167.AIR
+spec0464168.AIR
+spec0464169.AIR
+spec0464170.AIR
+spec0464171.AIR
+spec0464172.AIR
+spec0464173.AIR
+spec0464174.AIR
+spec0464175.AIR
+spec0464176.AIR
+spec0464177.AIR
+spec0464178.AIR
+spec0464179.AIR
+spec0464180.AIR
+spec0464181.AIR
+spec0464182.AIR
+spec0464183.AIR
+spec0464184.AIR
+spec0464185.AIR
+spec0464186.AIR
+spec0464187.AIR
+spec0464188.AIR
+spec0464189.AIR
+spec0464190.AIR
+spec0464191.AIR
+spec0464192.AIR
+spec0464193.AIR
+spec0464194.AIR
+spec0464195.AIR
+spec0464196.AIR
+spec0464197.AIR
+spec0464198.AIR
+spec0464199.AIR
+spec0464200.AIR
+spec0464201.AIR
+spec0464202.AIR
+spec0464203.AIR
+spec0464204.AIR
+spec0464205.AIR
+spec0464206.AIR
+spec0464207.AIR
+spec0464208.AIR
+spec0464209.AIR
+spec0464210.AIR
+spec0464211.AIR
+spec0464212.AIR
+spec0464213.AIR
+spec0464214.AIR
+spec0464215.AIR
+spec0464216.AIR
+spec0464217.AIR
+spec0464218.AIR
+spec0464219.AIR
+spec0464220.AIR
+spec0464221.AIR
+spec0464222.AIR
+spec0464223.AIR
+spec0464224.AIR
+spec0464225.AIR
+spec0464226.AIR
+spec0464227.AIR
+spec0464228.AIR
+spec0464229.AIR
+spec0464230.AIR
+spec0464231.AIR
+spec0464232.AIR
+spec0464233.AIR
+spec0464234.AIR
+spec0464235.AIR
+spec0464236.AIR
+spec0464237.AIR
+spec0464238.AIR
+spec0464239.AIR
+spec0464240.AIR
+spec0464241.AIR
+spec0464242.AIR
+spec0464243.AIR
+spec0464244.AIR
+spec0464245.AIR
+spec0464246.AIR
+spec0464247.AIR
+spec0464248.AIR
+spec0464249.AIR
+spec0464250.AIR
+spec0464251.AIR
+spec0464252.AIR
+spec0464253.AIR
+spec0464254.AIR
+spec0464255.AIR
+spec0464256.AIR
+spec0464257.AIR
+spec0464258.AIR
+spec0464259.AIR
+spec0464260.AIR
+spec0464261.AIR
+spec0464262.AIR
+spec0464263.AIR
+spec0464264.AIR
+spec0464265.AIR
+spec0464266.AIR
+spec0464267.AIR
+spec0464268.AIR
+spec0464269.AIR
+spec0464270.AIR
+spec0464271.AIR
+spec0464272.AIR
+spec0464273.AIR
+spec0464274.AIR
+spec0464275.AIR
+spec0464276.AIR
+spec0464277.AIR
+spec0464278.AIR
+spec0464279.AIR
+spec0464280.AIR
+spec0464281.AIR
+spec0464282.AIR
+2018/08/07---07:30:03 Run the stored proc that runs the java program to load the AIR files into database
+2018/08/07---07:30:06 Show output from java program:
+pnr no is SVM3E7
+pnr no len is 2
+3100p_pseudo_city_code
+38HJ,33CI,33MV,38TW,38TI,38TS,38JT,3100,3101,31FSv_spec_psedo_list
+param :  Specialist grp:X season:Y2018
+branch is : FLEX
+32
+pnr_id - pnr_no - crs-code - pnr creation_date3140717-SVM3E7-AMA-06-AUG-18
+33
+50
+Excp others, state:50 Specialist grp:X season:Y2018
+Statement:50Param: Specialist grp:X season:Y2018 -2291
+(fk) Airline (354) is not valid
+Result of air load:
+ERROR datafile /data/stella/airfiles/0134164.AIR cannot be moved to recycle.|Lf#/data/logs/stella//stelairl_070818_0730.log
+
+PL/SQL procedure successfully completed.
+
+2018/08/07---07:30:06 Completed load of data
+2018/08/07---07:30:06 Logfile used for run was
+/data/logs/stella//stelairl_070818_0730.log
+2018/08/07---07:30:06 Step 50\n
+error found
+tim.wilson@travelopia.com
+claire.everitt@travelopia.com
+steven.martin@travelopia.com
+sally.rowland@tuispecialist.com
+sam.walsh@tuispecialist.co.uk
+margaret.gill@tuispecialist.com
+jim.stockwell@tuispecialist.com
+bsp@tuispecialist.com
+wug-infra-alerts@tuispecialist.com
+2018/08/07---07:30:06 Step 60\n
+sally.rowland@tuispecialist.com
+sam.walsh@tuispecialist.co.uk
+margaret.gill@tuispecialist.com
+jim.stockwell@tuispecialist.com
+bsp@tuispecialist.com
+wug-infra-alerts@tuispecialist.com
+tim.wilson@travelopia.com
+claire.everitt@travelopia.com
+steven.martin@travelopia.com
+2018/08/07---07:30:07 Step 70\n
+about to delete old files
+2018/08/07---07:30:07 Step 80\n
+about to remove files from /data/stella/backup more than 30 days old
+
+about to archive todays specialist air files
+gonna tar/compress old specialist air files from archive area
+about to tar up individual files
+ls: /data/stella_archive/spec*.AIR: No such file or directory
+tar: Substituting `.' for empty member name
+tar: : Cannot stat: No such file or directory
+tar: Error exit delayed from previous errors
+about to compress the file /data/stella_archive/201808/specair_2018Aug07.tar
+about to remove individual files
+rm: cannot remove `/data/stella_archive/spec*.AIR': No such file or directory
+step finished tar/compress
+2018/08/07---07:30:07 END OF PROGRAM

@@ -1,0 +1,40 @@
+/oracle/product/10.2.0/db_1/bin/loadjava -resolver '((* STELLA) (* JUTIL) (* PUBLIC))' -u STELLA/lager65 -v -resolve StellaAIRLoad_2.0.1.java
+/oracle/product/10.2.0/db_1/bin/loadjava -resolver '((* STELLA) (* JUTIL) (* PUBLIC))' -u STELLA/lager65 -v -force -resolve StellaAIRLoad_2.0.1.java
+
+/oracle/product/10.2.0/db_1/bin/loadjava -resolver '((* STELLA) (* JUTIL) (* PUBLIC))' -u STELLA/lager65 -v -resolve EMDRecord.java
+/oracle/product/10.2.0/db_1/bin/loadjava -resolver '((* STELLA) (* JUTIL) (* PUBLIC))' -u STELLA/lager65 -v -force -resolve EMDRecord.java
+
+### Don't forget database changes DWSES-343 and DWSES-579 ###
+
+http://www.ocpsoft.org/tutorials/git/reset-and-sync-local-respository-with-remote-branch/
+
+
+
+					// there is no commit in the stored procedure
+					if (cstmt.getString(1) != null) {
+						System.out.println("Output of Execute statement :" +cstmt.getString(1) );
+						//application.log.fine("Output of Execute statement :" +cstmt.getString(1) );
+
+						if (cstmt.getString(1).startsWith("Error, (fk)")) {
+							application.log.warning("F:"
+									+ fileToProcess.getName() + ",PNR:" + recPNR
+									+ "/" + recPseudoCityCode + " tkt:"
+									+ recTicketNo + ", failed:"
+									+ cstmt.getString(1) + ", retry next run");
+							// return 1 so moved to recycle and will try again
+							// until foriegn key satisfied
+							return 1;
+						} else if (cstmt.getString(1).startsWith("Error")) {
+							// severe error in the stored procedure
+							application.log.severe("F:"
+									+ fileToProcess.getName() + ",PNR:"
+									+ recPNR + "/" + recPseudoCityCode
+									+ " tkt:" + recTicketNo + ", failed:"
+									+ cstmt.getString(1)
+									+ ", moved to error area");
+							// return 2 so moved to error and will not try again
+							// next run
+							return 2;
+						}
+					} else {
+						numRowsInserted++;

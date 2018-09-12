@@ -1,0 +1,82 @@
+Telnet to 10.80.226.148
+Login as oracle 
+
+expdp schemas=JUTIL,STELLA,STELLABATCH,STELLAINTRANET directory=DATA_PUMP_DIR dumpfile=stella.dmp logfile=stella.log
+Prompts for user and password use 'sys as sysdba' 
+
+
+cd /oracle/product/10.2.0/db_1/admin/DWL/dpdump/
+/oracle/product/10.2.0/db_1/admin/DWL/dpdump/
+ls -ltr
+
+gzip stella.dmp
+
+Copy these file using ftp to 10.80.224.11  
+And eventualy to /Oracle/SECTOR/app/oraclestr/admin/dtwlive/dpdump
+Then unzip these files.
+
+
+As sysdba in dtwlive.travelopia.com
+
+CREATE TABLESPACE TS_STELLA DATAFILE 
+  '/SECTOR/database/dtwlive/ts_stella.dbf' SIZE 1G AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED
+NOLOGGING
+EXTENT MANAGEMENT LOCAL AUTOALLOCATE
+BLOCKSIZE 16K
+SEGMENT SPACE MANAGEMENT AUTO
+FLASHBACK ON;
+
+CREATE TABLESPACE TS_JUTIL DATAFILE 
+  '/SECTOR/database/dtwlive/ts_stella.dbf' SIZE 5G AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED
+NOLOGGING
+EXTENT MANAGEMENT LOCAL AUTOALLOCATE
+BLOCKSIZE 16K
+SEGMENT SPACE MANAGEMENT AUTO
+FLASHBACK ON;
+
+Then create two roles:
+
+CREATE ROLE bo_role identified by bo_role;
+CREATE ROLE BOXIUSER identified by BOXIUSER;
+
+impdp schemas=JUTIL,STELLA,STELLABATCH,STELLAINTRANET directory=DATA_PUMP_DIR dumpfile=stella.dmp logfile=stella_imp.log
+Schema		Password
+JUTIL   	procs
+STELLA  	lager65
+STELLABATCH	yeast
+STELLAINTRANET	 ?????
+
+Invalid in 10g
+Packages 
+jutil.p_date_utilities  
+jutil.p_mis_utils
+jutil.p_email_role
+jutil.p_app_stat_procedures 
+stella.p_stella_itour_reconciliation
+
+Procedures  
+stella.SP_UPDATE_STELLA_BOOKING_REF
+stella.SP_RERECONCILE_STELLA_PNR
+stella.MISSING_BOOKINGS_REPORT 
+jutil.APP_STAT_SYNERGEX_CHECK	
+jutil.DELETE_OLD_USER	        
+jutil.APP_STAT_DMIS_CHECK	
+
+Views
+jutil.V_SECURITY_USER	VIEW
+
+
+
+Linux
+
+P-GS2-ORA-01	10.80.224.11
+User = Oracle
+/Oracle/SECTOR/scripts/stella
+
+	Files copied into sub-dir stella and jutil
+	
+	
+	
+ 
+
+
