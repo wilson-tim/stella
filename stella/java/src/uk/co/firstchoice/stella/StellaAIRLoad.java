@@ -106,6 +106,7 @@ import uk.co.firstchoice.util.businessrules.NumberProcessor;
  * 10/09/2018
  * Bug fix for TMCD record processing
  * 01 Processing for RFD (refund) record
+ * 02 New processing for taxAmt == "EXEMPT" (MI-1444), revise error message from tax1 to tax2 for clarity
  *
  */
 
@@ -1643,6 +1644,8 @@ public class StellaAIRLoad {
                                                         chunk.length() - 5))
                                                     .trim();
 
+                                                taxAmt = taxAmt.replaceAll("EXEMPT", "0.00");
+
                                                 if (!NumberProcessor
                                                     .validateStringAsNumber(taxAmt)) {
                                                     // invalid number
@@ -1654,7 +1657,7 @@ public class StellaAIRLoad {
                                                             recPNR +
                                                             " tkt:" +
                                                             recTicketNo +
-                                                            ", tax1:" +
+                                                            ", tax2:" +
                                                             taxAmt +
                                                             " is not numeric error");
                                                     return 2;
