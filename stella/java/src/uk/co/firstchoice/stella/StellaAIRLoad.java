@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -107,6 +106,11 @@ import uk.co.firstchoice.util.businessrules.NumberProcessor;
  * Bug fix for TMCD record processing
  * 01 Processing for RFD (refund) record
  * 02 New processing for taxAmt == "EXEMPT" (MI-1444), revise error message from tax1 to tax2 for clarity
+ *
+ * @version 2.2
+ * @author Tim Wilson
+ * 09/11/2018
+ * Bug fix for "Group Code is Blank in Air File" error
  *
  */
 
@@ -735,15 +739,15 @@ public class StellaAIRLoad {
         FileReader theFile, theFile2, theFile3;
         BufferedReader fileIn = null, fileIn2 = null, fileIn3 = null;
         String oneLine, lineData = "";
-        Vector<AirRecord> fileRecs = new Vector<AirRecord>();
+        Vector fileRecs = new Vector();
         AirRecord fileRec = new AirRecord();
         //int paxNo = 0, fareBasisNo = 0;
         int numPaxRecs = 0;
 //        int recCounter = 0;
         String recID = "";
 
-        Vector<EMDRecord> EMDRecs = new Vector<EMDRecord>();  // All EMD record(s) in a file
-        Vector<EMDRecord> EMDTkts = new Vector<EMDRecord>();  // EMD record(s) for the passenger currently being processed (current I- record)
+        Vector EMDRecs = new Vector();  // All EMD record(s) in a file
+        Vector EMDTkts = new Vector();  // EMD record(s) for the passenger currently being processed (current I- record)
         EMDRecord EMDCurrentRec = new EMDRecord();
 
         String CheckBookingRef = "";
@@ -924,7 +928,7 @@ public class StellaAIRLoad {
                      * additional fare Form of Payment eg FPO/NONREF
                      * AGT+/CASH/GBP731.00 or FPO/NONREF
                      * AGT+/CASH/GBP100.00;S2-5;P1
-                     * Ver 1.1 : FPO line received as FPO/NONREF AGT+/NONREF AGT/GBP50.00  , code could not read \uFFFD50 as no /CASH in it.
+                     * Ver 1.1 : FPO line received as FPO/NONREF AGT+/NONREF AGT/GBP50.00  , code could not read \\uFFFD50 as no /CASH in it.
                      * Fixed by searching for /GBP rather CASH/
                      */
 
@@ -2173,6 +2177,35 @@ public class StellaAIRLoad {
                                 application.log.fine(" FP booking ref is " + recBookingRef);
                             }
                             
+                        } else if (fileRec.recordID.equals("FP") && (StringUtils.searchStringOccur(fileRec.recordText, "NONREF", 1) > 0)) {
+                            // version 2.2  09/11/2018
+                            stage = "processing FP for Group and Booking Ref for Specialist";
+                            application.log.finest("inside FP");
+                            application.log.finest("FP line : " + fileRec.recordText);
+
+                            // locate NONREF
+                            String patternString = "NONREF[A-Z]{1,3}[0-9]{1,10}";
+
+                            Pattern pattern = Pattern.compile(patternString);
+                            Matcher matcher = pattern.matcher(fileRec.recordText);
+
+                            if (matcher.find()) {
+                                String fprefs = fileRec.recordText.substring(matcher.start() + 6, matcher.end());
+                                group = fprefs.replaceAll("[0-9]", "");
+                                recBookingRef = fprefs.replaceAll("[A-Z]", "");
+
+                                if (EMDfound) {
+                                    if ((CheckBookingRef.equals("")) && (!recBookingRef.equals(""))) {
+                                        CheckBookingRef = recBookingRef;
+                                    } else {
+                                        BookingRefInconsistent = (!CheckBookingRef.equals(recBookingRef));
+                                    }
+                                }
+
+                                application.log.fine(" FP group is " + group);
+                                application.log.fine(" FP booking ref is " + recBookingRef);
+                            }
+                            
                             // eg. RM ##DX352331 or RM ##D X352331 or RM #DL1189738
                         } else if (fileRec.recordID.equals("RM") && (fileRec.recordText.substring(0, 6).equals("RM ##D") || fileRec.recordText.substring(0, 5).equals("RM #D"))) {
                             stage = "processing RM for Group and Booking Ref for Specialist";
@@ -2369,7 +2402,6 @@ public class StellaAIRLoad {
                             }
                         }
                     }
-
                     fileRec = (AirRecord) recData.nextElement();
 
                 } // end of while loop , going through records followed after I-
@@ -2651,11 +2683,11 @@ public class StellaAIRLoad {
                     } else {
                         if (commAmt.compareTo(new BigDecimal("0")) == 0 && commPct.compareTo(new BigDecimal("0")) != 0) {
                             // calc amt from pct * published fare
-                            commAmt = (publishedFareAmt.multiply(commPct)).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+                            commAmt = (publishedFareAmt.multiply(commPct)).divide(new BigDecimal("100"), 2, 4);
                             recCommAmt = String.valueOf(commAmt);
                         } else if (commAmt.compareTo(new BigDecimal("0")) != 0 && commPct.compareTo(new BigDecimal("0")) == 0) {
                             // calc pct from amt / published fare
-                            commPct = (commAmt.divide(publishedFareAmt, 2, RoundingMode.HALF_UP)).multiply(new BigDecimal("100"));
+                            commPct = (commAmt.divide(publishedFareAmt, 2, 4)).multiply(new BigDecimal("100"));
                             recCommPct = String.valueOf(commPct);
 
                         }
