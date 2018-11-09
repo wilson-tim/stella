@@ -2270,8 +2270,10 @@ public class StellaAIRLoad {
                             String tmpAirline  = tktRecord.substring(0, dashPos);
                             String tmpTicketNo = tktRecord.substring(dashPos + 1, endPos);
 
-                            recTicketType = "E";
-                            recETicketInd = "Y";
+                            if (recTicketType.equals("")) {
+                                recTicketType = "E";
+                                recETicketInd = "Y";
+                            }
                             
                             // Update associated EMD record in EMDTkts
                             // first get the document id
