@@ -111,6 +111,7 @@ import uk.co.firstchoice.util.businessrules.NumberProcessor;
  * @author Tim Wilson
  * 09/11/2018
  * Bug fix for "Group Code is Blank in Air File" error
+ * 01 In TMCD record processing assign recTicketType and recETicketInd
  *
  */
 
@@ -1027,7 +1028,7 @@ public class StellaAIRLoad {
                         (recID.equals("AI") || recID.equals("MU") ||
                             recID.equals("C-") || recID.equals("D-") ||
                             recID.equals("EM") || 
-                            recID.equals("H-") || recID.equals("K-") ||
+                            recID.equals("H-") || recID.equals("U-") || recID.equals("K-") ||
                             recID.equals("KN") || recID.equals("KF") ||
                             recID.equals("KS") || recID.equals("M-"))) {
 
@@ -1154,7 +1155,7 @@ public class StellaAIRLoad {
                             // always be on first H- record, so ignore to read
                             // rest of H- records
                             // date is in the format of DDMON
-                            else if ((recID.equalsIgnoreCase("H-")) &&
+                            else if ((recID.equalsIgnoreCase("H-") || recID.equalsIgnoreCase("U-")) &&
                                 (!firstDepDateFound)) {
 
                                 stage = "processing H- for First departure date";
@@ -2269,6 +2270,9 @@ public class StellaAIRLoad {
                             String tmpAirline  = tktRecord.substring(0, dashPos);
                             String tmpTicketNo = tktRecord.substring(dashPos + 1, endPos);
 
+                            recTicketType = "E";
+                            recETicketInd = "Y";
+                            
                             // Update associated EMD record in EMDTkts
                             // first get the document id
                             startPos = StringUtils.searchStringOccur(
