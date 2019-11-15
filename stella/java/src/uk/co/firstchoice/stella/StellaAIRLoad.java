@@ -1119,7 +1119,7 @@ public class StellaAIRLoad {
                                 application.log.fine("recPNRdate " + recPNRdate);
 
                                 if (!DateProcessor.checkDate(recTicketDate,
-                                        "yymmdd") |
+                                        "yymmdd") ||
                                     !DateProcessor.checkDate(recPNRdate,
                                         "yymmdd")) { // validate date
                                     // format
