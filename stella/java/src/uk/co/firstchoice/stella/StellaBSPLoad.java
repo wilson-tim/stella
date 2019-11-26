@@ -50,6 +50,7 @@ if internal connection not to be used:
  v1.7 Leigh Sep07 Modified validation to allow a BKP record to come without a BKF preceeding it
  v1.8 TimW  Mar19 Revised duplicate batch error message details
  v1.9 TimW  Mar19 Test for file name + period end date + iata number
+ v2.0 TimW  Nov19 Bug fix for conjunction tickets flag
  */
 
 
@@ -948,24 +949,19 @@ public class StellaBSPLoad {
                         // now populate necessary fields
                         countBKS24 ++;
 
-                        wConjunctionInd = fileRec.recordText.substring(61,64).trim();
-                        if (wConjunctionInd.equals("CNJ")  ) {
-                            // conjunction ticket, need to process what we already have within
-                            // this BKT batch
+                        if ( fileRec.recordText.substring(61,64).trim().equals("CNJ") ) {
+                            // conjunction ticket, need to process what we already have within this BKT batch
                             // before we can process this conjunction one
-                            // call stored proc here -- needs to be in a subroutine so can be
-                            // called from
-                            // different places
+                            // call stored proc here - needs to be in a subroutine so can be called from different places
                             // again need to validate flags
                             // now insert record to database
-                            wConjunctionInd = ""; // only the second in the pair should be set to Y in database
                             application.log.finest("loading cnj");
                             if (!insertTransaction(conn, showContents)) {
                                 application.log.severe("ERROR datafile: " + fileToProcess + " error inserting transaction to database (cnj)");
                                 return 1;
                             }
                             processedThisTrans = false; // we have processed the previous 24, but not this one
-                            wConjunctionInd = "CNJ"; // only the second in the pair should be set to Y in database
+                            wConjunctionInd = "CNJ"; // only the conjunction tickets should be set to Y in database
                             recTaxTotal = 0;  // reset amts to 0 for conjunction
                             recGBTax = 0;
                             recUBTax = 0;
@@ -1836,3 +1832,4 @@ public class StellaBSPLoad {
 
 
 }
+
