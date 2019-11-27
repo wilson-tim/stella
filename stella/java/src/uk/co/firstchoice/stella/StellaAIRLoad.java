@@ -929,7 +929,7 @@ public class StellaAIRLoad {
                      * additional fare Form of Payment eg FPO/NONREF
                      * AGT+/CASH/GBP731.00 or FPO/NONREF
                      * AGT+/CASH/GBP100.00;S2-5;P1
-                     * Ver 1.1 : FPO line received as FPO/NONREF AGT+/NONREF AGT/GBP50.00  , code could not read \\uFFFD50 as no /CASH in it.
+                     * Ver 1.1 : FPO line received as FPO/NONREF AGT+/NONREF AGT/GBP50.00  , code could not read \\\\uFFFD50 as no /CASH in it.
                      * Fixed by searching for /GBP rather CASH/
                      */
 
@@ -2029,7 +2029,7 @@ public class StellaAIRLoad {
                             recCommAmt = fileRec.recordText.substring(
                                 startPos + 1, fmEndPos);
                         }
-                    } // end of FM
+                    } // end of else if for FM
 
                     // Tour Code Can start with FTIT (BT / IT) or FTNR( Net
                     // remitt),
@@ -2055,7 +2055,7 @@ public class StellaAIRLoad {
                             recTourCode = recTourCode.substring(0, 15);
                         }
 
-                    }
+                    } // end of else if for FT
 
                     // Original Issue / In Exchange For
                     else if (fileRec.recordID.equals("FO")) {
@@ -2072,7 +2072,7 @@ public class StellaAIRLoad {
                             // e.g. FO006-2570769969-70LON24MAY18/91212295/006-25707699694E1234*I;S4-8;P3
                             foRecord = fileRec.recordText.substring(6);
                         } else {
-                            // e,g, :FO1572570111863LON30APR1891278401
+                            // e.g. FO1572570111863LON30APR1891278401
                             foRecord = fileRec.recordText.substring(5);
                         }
 
@@ -2133,7 +2133,8 @@ public class StellaAIRLoad {
 
                         application.log.fine("noOfConjExchTkts " + noOfConjExchTkts);
 
-                    }
+                    } // end of else if for FO
+					
                     // FPO record is already read at the beginning to get
                     // collection amt
 
@@ -2323,7 +2324,7 @@ public class StellaAIRLoad {
                                 " Cannot read TMCD line " + fileRec.recordText);
                             return 2;
                         }
-                    }
+                    } // end of else if for TMCD
 
                     else if ((fileRec.recordID.equals("MF")) && fileRec.recordText.startsWith("MFPNONREFAGT")) {
                         stage = "processing MFP record";
@@ -2407,7 +2408,8 @@ public class StellaAIRLoad {
                                 application.log.fine("EMD ticket record updated " + EMDCurrentRec.docID + " " + EMDCurrentRec.sellingFareAmount + " " + EMDCurrentRec.remainingTax + " " + EMDCurrentRec.airline + " " + EMDCurrentRec.ticketNo + " " + EMDCurrentRec.group + " " + EMDCurrentRec.bookingRef );
                             }
                         }
-                    }
+                    } // end of else if for MFP
+					
                     fileRec = (AirRecord) recData.nextElement();
 
                 } // end of while loop , going through records followed after I-
@@ -3157,3 +3159,4 @@ public class StellaAIRLoad {
     } // end of populateFare function
 
 }
+
